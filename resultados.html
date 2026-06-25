@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Completo – Estudio de Línea de Base VIDA</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--b:#378ADD;--bl:#E6F1FB;--bd:#0C447C;--t:#1D9E75;--tl:#E1F5EE;--td:#085041;--c:#D85A30;--cl:#FAECE7;--cd:#712B13;--a:#BA7517;--al:#FAEEDA;--ad:#633806;--p:#534AB7;--pl:#EEEDFE;--pd:#3C3489;--g:#888780;--gl:#F1EFE8;--gd:#444441;--r:#E24B4A;--rl:#FCEBEB;--rd:#791F1F;--n:#1a1a18;--n2:#5f5e5a;--n3:#888780;--bg:#f8f8f6;--card:#fff;--brd:rgba(0,0,0,0.1);--rad:10px}
+@media(prefers-color-scheme:dark){:root{--n:#f1efe8;--n2:#b4b2a9;--n3:#888780;--bg:#1a1a18;--card:#242420;--brd:rgba(255,255,255,0.08);--bl:#042C53;--tl:#04342C;--cl:#4A1B0C;--al:#412402;--pl:#26215C;--rl:#501313}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--n);font-size:13px;line-height:1.5}
+.wrap{max-width:1140px;margin:0 auto;padding:16px}
+/* Header */
+.hdr{background:var(--card);border:0.5px solid var(--brd);border-radius:var(--rad);padding:20px 24px;margin-bottom:14px}
+.hdr h1{font-size:18px;font-weight:500;margin-bottom:4px}
+.hdr p{font-size:12px;color:var(--n2);margin-bottom:12px}
+.hdr-meta{display:flex;flex-wrap:wrap;gap:16px}
+.hm{display:flex;flex-direction:column;gap:1px}
+.hm-l{font-size:10px;color:var(--n3);text-transform:uppercase;letter-spacing:.4px}
+.hm-v{font-size:13px;font-weight:500}
+/* Navigation */
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.nb{background:var(--card);border:0.5px solid var(--brd);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--n2);font-family:inherit;transition:.15s}
+.nb:hover{border-color:var(--b);color:var(--b)}
+.nb.on{background:var(--b);color:#fff;border-color:var(--b)}
+/* Sections */
+.sec{display:none}.sec.on{display:block}
+/* KPI grid */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:0.5px solid var(--brd);border-radius:var(--rad);padding:12px 14px;border-left:3px solid var(--b)}
+.kpi.t{border-left-color:var(--t)}.kpi.a{border-left-color:var(--a)}.kpi.r{border-left-color:var(--r)}.kpi.p{border-left-color:var(--p)}.kpi.g{border-left-color:var(--g)}
+.kl{font-size:11px;color:var(--n3);margin-bottom:3px}
+.kv{font-size:22px;font-weight:500;line-height:1}
+.ks{font-size:11px;color:var(--n2);margin-top:2px}
+/* Grid layouts */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr}}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}.g4{grid-template-columns:1fr 1fr}}
+/* Card */
+.card{background:var(--card);border:0.5px solid var(--brd);border-radius:var(--rad);padding:16px;margin-bottom:12px}
+.ct{font-size:13px;font-weight:500;margin-bottom:2px}
+.cs{font-size:11px;color:var(--n3);margin-bottom:12px}
+/* Chart wrap */
+.cw{position:relative;width:100%}
+/* Legend */
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;font-size:11px;color:var(--n2)}
+.li{display:flex;align-items:center;gap:4px}
+.ld{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+/* Bar simple */
+.bars{display:flex;flex-direction:column;gap:7px}
+.br{display:flex;align-items:center;gap:8px;font-size:11px}
+.bl{width:120px;color:var(--n2);flex-shrink:0;text-align:right}
+.bt{flex:1;height:9px;background:var(--bg);border-radius:4px;overflow:hidden;min-width:0}
+.bf{height:100%;border-radius:4px}
+.bv{width:38px;font-weight:500;flex-shrink:0}
+/* Table */
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--brd);color:var(--n3);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.tbl td{padding:6px 8px;border-bottom:0.5px solid var(--brd);color:var(--n)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg)}
+/* Pill */
+.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.pb{background:var(--bl);color:var(--bd)}.pt{background:var(--tl);color:var(--td)}.pa{background:var(--al);color:var(--ad)}.pr{background:var(--rl);color:var(--rd)}.pp{background:var(--pl);color:var(--pd)}
+/* Insight */
+.ins{background:var(--tl);border-left:3px solid var(--t);border-radius:6px;padding:10px 12px;margin-top:10px}
+.ins p{font-size:11px;color:var(--td);line-height:1.5}
+.ins-r{background:var(--rl);border-left-color:var(--r)}
+.ins-r p{color:var(--rd)}
+.ins-a{background:var(--al);border-left-color:var(--a)}
+.ins-a p{color:var(--ad)}
+/* Quote */
+.quote{background:var(--bg);border-left:3px solid var(--b);border-radius:6px;padding:10px 12px;margin:8px 0;font-size:11px;font-style:italic;color:var(--n2)}
+.qauth{font-style:normal;font-weight:500;color:var(--n3);margin-top:4px;font-size:10px}
+/* District cards */
+.dcgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.dcgrid{grid-template-columns:1fr}}
+.dc{border-radius:8px;padding:12px;border:0.5px solid var(--brd)}
+.dc-h{font-size:12px;font-weight:500;margin-bottom:6px}
+.dc-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin-bottom:6px}
+/* Section divider */
+.sdiv{font-size:12px;font-weight:500;color:var(--n3);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px;padding-bottom:4px;border-bottom:0.5px solid var(--brd)}
+/* Radar-like score */
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.score-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg);border-radius:6px}
+.score-dots{display:flex;gap:3px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--brd)}
+.dot.on{background:var(--b)}
+.dot.on-t{background:var(--t)}
+.dot.on-r{background:var(--r)}
+.score-label{font-size:11px;color:var(--n2)}
+/* Priority bars for qualitative */
+.pbar-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.pbar-grid{grid-template-columns:1fr}}
+.pbar-section{padding:10px;background:var(--bg);border-radius:6px}
+.pbar-title{font-size:11px;font-weight:500;color:var(--n3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
+.pbar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:11px}
+.pbar-name{flex:1;color:var(--n2)}
+.pbar-score{display:flex;gap:2px}
+.psq{width:14px;height:14px;border-radius:2px}
+.psq.on{opacity:1}.psq.off{opacity:.15}
+/* Epidemio table */
+.epi-wrap{overflow-x:auto}
+/* Comparison badges */
+.diff-pos{color:var(--t);font-weight:500}
+.diff-neg{color:var(--r);font-weight:500}
+.diff-neu{color:var(--n3)}
+/* Funnel buttons */
+.fnb{font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--brd);background:var(--card);cursor:pointer;color:var(--n2);font-family:inherit;transition:.15s}
+.fnb:hover{border-color:var(--b);color:var(--b)}
+.fnb.on{background:var(--b);color:#fff;border-color:var(--b)}
+/* Heatmap */
+.hm-grid{display:grid;gap:3px}
+.hm-cell{display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:11px;font-weight:500;padding:6px 4px;min-height:36px}
+/* Likert */
+.likert-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:11px}
+.likert-label{width:220px;flex-shrink:0;color:var(--n2);text-align:right;line-height:1.3}
+.likert-bars{flex:1;display:flex;height:22px;border-radius:4px;overflow:hidden}
+.likert-val{position:absolute;font-size:9px;color:#fff;font-weight:500}
+/* Comparador */
+.cmp-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.cmp-tbl th{padding:6px 8px;border-bottom:1px solid var(--brd);color:var(--n3);font-weight:500;font-size:10px;text-transform:uppercase}
+.cmp-tbl td{padding:6px 8px;border-bottom:0.5px solid var(--brd)}
+.cmp-tbl tr:hover td{background:var(--bg)}
+.cmp-win{color:#085041;font-weight:500}
+.cmp-lose{color:#791F1F}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <h1>Estudio de línea de base – Proyecto VIDA (Iniciativas Vitales para el Desarrollo de un Sistema de Salud Resiliente al Clima en la Amazonía)</h1>
+  <p>Consultoría financiada por KOICA · Ejecutada por World Vision Perú · Coordinador: César A. Delgado Pizarro</p>
+  <div class="hdr-meta">
+    <div class="hm"><span class="hm-l">Total viviendas</span><span class="hm-v">1,032</span></div>
+    <div class="hm"><span class="hm-l">Grupo control</span><span class="hm-v">Belén + Yurimaguas (n=516)</span></div>
+    <div class="hm"><span class="hm-l">Grupo intervención</span><span class="hm-v">Punchana + San Juan Bautista (n=516)</span></div>
+    <div class="hm"><span class="hm-l">Ámbito urbano</span><span class="hm-v">946 (91.7%)</span></div>
+    <div class="hm"><span class="hm-l">Ámbito rural</span><span class="hm-v">86 (8.3%)</span></div>
+    <div class="hm"><span class="hm-l">Idioma hogar</span><span class="hm-v">Castellano 100%</span></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="show('resumen',this)">Resumen</button>
+  <button class="nb" onclick="show('epidemio',this)">Epidemiología</button>
+  <button class="nb" onclick="show('demo',this)">Demografía</button>
+  <button class="nb" onclick="show('socio',this)">Socioeconómico</button>
+  <button class="nb" onclick="show('vivienda',this)">Vivienda y activos</button>
+  <button class="nb" onclick="show('salud',this)">Salud y malaria</button>
+  <button class="nb" onclick="show('clima',this)">Clima</button>
+  <button class="nb" onclick="show('comunidad',this)">Comunidad</button>
+  <button class="nb" onclick="show('agua',this)">Agua y saneamiento</button>
+  <button class="nb" onclick="show('genero',this)">Género y bienestar</button>
+  <button class="nb" onclick="show('cualitativo',this)">Reporte cualitativo</button>
+  <button class="nb" onclick="show('indicadores',this)">43 indicadores clave</button>
+  <button class="nb" onclick="show('semaforo',this)">🚦 Semáforo brechas</button>
+  <button class="nb" onclick="show('comparador',this)">⇄ Comparador distritos</button>
+  <button class="nb" onclick="show('radar',this)">◎ Radar dimensiones</button>
+  <button class="nb" onclick="show('funnel',this)">▽ Embudo atención</button>
+  <button class="nb" onclick="show('heatmap',this)">▦ Heatmap preventivo</button>
+  <button class="nb" onclick="show('likert',this)">≈ Likert clima</button>
+  <button class="nb" onclick="show('buscador',this)">⌕ Buscador indicadores</button>
+</div>
+
+<!-- ═══════════ RESUMEN ═══════════ -->
+<div id="s-resumen" class="sec on">
+  <div class="kgrid">
+    <div class="kpi"><div class="kl">Viviendas encuestadas</div><div class="kv">1,032</div><div class="ks">516 control · 516 intervención</div></div>
+    <div class="kpi t"><div class="kl">Electricidad cobertura</div><div class="kv">~98%</div><div class="ks">Casi universal los 4 distritos</div></div>
+    <div class="kpi a"><div class="kl">Jefes alfabetizados</div><div class="kv">~98%</div><div class="ks">Todos los distritos</div></div>
+    <div class="kpi r"><div class="kl">Consulta inmediata SJB</div><div class="kv">90.3%</div><div class="ks">Belén 49.2%, Yurimaguas 54.3%</div></div>
+    <div class="kpi p"><div class="kl">CC afecta malaria/dengue (intervención)</div><div class="kv">66.7%</div><div class="ks">vs 37.4% grupo control</div></div>
+    <div class="kpi g"><div class="kl">Gasto semanal SJB (media)</div><div class="kv">S/405</div><div class="ks">Control: S/267 promedio</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Muestra por distrito</div><div class="cs">Distribución urbano/rural</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Urbano</span><span class="li"><span class="ld" style="background:#BA7517"></span>Rural</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-muestra" role="img" aria-label="Viviendas por distrito">Belén 258, Yurimaguas 258, Punchana 257, SJB 259.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Tasas de incidencia 2025 (por 100 hab.)</div><div class="cs">Malaria y dengue por distrito</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#D85A30"></span>Malaria</span><span class="li"><span class="ld" style="background:#378ADD"></span>Dengue</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-epi-resumen" role="img" aria-label="Tasas de incidencia de malaria y dengue 2025">Datos epidemiológicos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Comparación control vs intervención – hallazgos clave (p&lt;0.05)</div>
+    <div class="cs">Diferencias estadísticamente significativas entre grupos</div>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Indicador</th><th>Control (n=516)</th><th>Intervención (n=516)</th><th>Diferencia</th><th>p-valor</th></tr></thead>
+      <tbody>
+        <tr><td>Gasto semanal medio (S/)</td><td>267.13</td><td>332.43</td><td class="diff-neg">+65.30</td><td>&lt;0.001</td></tr>
+        <tr><td>Paredes de material noble</td><td>78.9%</td><td>70.0%</td><td class="diff-neg">-8.9pp</td><td>0.005</td></tr>
+        <tr><td>Acceso a desagüe</td><td>85.5%</td><td>78.3%</td><td class="diff-neg">-7.2pp</td><td>0.022</td></tr>
+        <tr><td>Agua entubada en casa</td><td>69.2%</td><td>87.8%</td><td class="diff-pos">+18.6pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Agua superficial (riesgo)</td><td>3.5%</td><td>24.6%</td><td class="diff-neg">+21.1pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Consulta inmediata ante fiebre</td><td>51.7%</td><td>73.1%</td><td class="diff-pos">+21.4pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Uso medicamentos/salud (último mes)</td><td>36.8%</td><td>18.0%</td><td class="diff-neg">-18.8pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Importancia fumigar (bastante/extremo)</td><td>62.8%</td><td>76.9%</td><td class="diff-pos">+14.1pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Suficiencia alimentaria (alcanza bien)</td><td>38.4%</td><td>23.3%</td><td class="diff-neg">-15.1pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Suficiencia atención salud (alcanza bien)</td><td>39.9%</td><td>26.0%</td><td class="diff-neg">-13.9pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Solo cubre gastos a las justas</td><td>49.2%</td><td>58.1%</td><td class="diff-neg">+8.9pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Decisiones conjuntas en salud</td><td>34.5%</td><td>48.8%</td><td class="diff-pos">+14.3pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Grupos comunitarios voluntarios</td><td>43.8%</td><td>34.3%</td><td class="diff-neg">-9.5pp</td><td>0.002</td></tr>
+        <tr><td>Grupos de limpieza comunitaria</td><td>0.9%</td><td>7.9%</td><td class="diff-pos">+7.0pp</td><td>0.002</td></tr>
+        <tr><td>Participación en capacitación salud</td><td>10.3%</td><td>2.5%</td><td class="diff-neg">-7.8pp</td><td>&lt;0.001</td></tr>
+        <tr><td>Percepción CC afecta malaria (bastante/extremo)</td><td>37.4%</td><td>66.7%</td><td class="diff-pos">+29.3pp</td><td>&lt;0.001</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ EPIDEMIOLOGÍA ═══════════ -->
+<div id="s-epidemio" class="sec">
+  <div class="kgrid">
+    <div class="kpi r"><div class="kl">Malaria SJB 2025 (casos)</div><div class="kv">1,644</div><div class="ks">Tasa 1.08%</div></div>
+    <div class="kpi a"><div class="kl">Dengue Yurimaguas 2025</div><div class="kv">1,439</div><div class="ks">Tasa 1.36%</div></div>
+    <div class="kpi t"><div class="kl">Dengue Belén 2025</div><div class="kv">438</div><div class="ks">Tasa 0.71%</div></div>
+    <div class="kpi p"><div class="kl">Malaria Punchana 2025</div><div class="kv">482</div><div class="ks">Tasa 0.65%</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Tasa de incidencia de malaria 2025 y 2026 (%)</div><div class="cs">Por 100 habitantes · semanas 1-52 (2025) y 1-13 (2026)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>2025</span><span class="li"><span class="ld" style="background:#D85A30;opacity:.6"></span>2026</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-malaria" role="img" aria-label="Tasas de malaria 2025 y 2026">Datos de malaria por distrito.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Tasa de incidencia de dengue 2025 y 2026 (%)</div><div class="cs">Por 100 habitantes · semanas 1-52 (2025) y 1-13 (2026)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#1D9E75"></span>2025</span><span class="li"><span class="ld" style="background:#1D9E75;opacity:.5"></span>2026</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-dengue" role="img" aria-label="Tasas de dengue 2025 y 2026">Datos de dengue por distrito.</canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Resumen epidemiológico por distrito</div>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Distrito</th><th>Grupo</th><th>Población</th><th>Malaria casos 2025</th><th>Malaria tasa 2025 (%)</th><th>Malaria casos 2026*</th><th>Malaria tasa 2026 (%)</th><th>Dengue casos 2025</th><th>Dengue tasa 2025 (%)</th><th>Dengue casos 2026*</th><th>Dengue tasa 2026 (%)</th></tr></thead>
+      <tbody>
+        <tr><td>Belén</td><td><span class="pill pb">Control</span></td><td>61,641</td><td>153</td><td>0.25</td><td>18</td><td>0.03</td><td>438</td><td>0.71</td><td>104</td><td>0.17</td></tr>
+        <tr><td>Yurimaguas</td><td><span class="pill pb">Control</span></td><td>105,973</td><td>44</td><td>0.04</td><td>0</td><td>0.00</td><td>1,439</td><td>1.36</td><td>546</td><td>0.50</td></tr>
+        <tr><td>Punchana</td><td><span class="pill pt">Intervención</span></td><td>74,408</td><td>482</td><td>0.65</td><td>33</td><td>0.04</td><td>396</td><td>0.53</td><td>44</td><td>0.06</td></tr>
+        <tr><td>San Juan Bautista</td><td><span class="pill pt">Intervención</span></td><td>152,144</td><td>1,644</td><td>1.08</td><td>171</td><td>0.11</td><td>758</td><td>0.50</td><td>250</td><td>0.16</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="ins-a ins"><p>* 2026: semanas 1-13 únicamente. Fuente: Sala Situacional de Enfermedades Metaxénicas MINSA 2025; proyección INEI 2008/2018.</p></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Diagnóstico profesional de malaria o dengue (de hogares con enfermos)</div>
+      <div class="cs">% de hogares que reportó enfermedad en últimos 6 meses con diagnóstico confirmado</div>
+      <div class="cw" style="height:180px"><canvas id="c-diag" role="img" aria-label="Diagnóstico de malaria o dengue por distrito">Datos diagnósticos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Tiempo hasta diagnóstico confirmado de malaria/dengue</div>
+      <div class="cs">% de casos por tiempo de espera</div>
+      <div class="bars" style="margin-top:4px">
+        <div style="font-size:11px;font-weight:500;color:var(--n3);margin-bottom:4px">Menos de 3 horas</div>
+        <div class="br"><span class="bl">San Juan Bautista</span><div class="bt"><div class="bf" style="width:83.3%;background:var(--t)"></div></div><span class="bv">83.3%</span></div>
+        <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:50%;background:var(--b)"></div></div><span class="bv">50.0%</span></div>
+        <div class="br"><span class="bl">Yurimaguas</span><div class="bt"><div class="bf" style="width:23.1%;background:var(--p)"></div></div><span class="bv">23.1%</span></div>
+        <div style="font-size:11px;font-weight:500;color:var(--n3);margin:8px 0 4px">Más de 6 horas hasta 1 día</div>
+        <div class="br"><span class="bl">Yurimaguas</span><div class="bt"><div class="bf" style="width:61.5%;background:var(--r)"></div></div><span class="bv">61.5%</span></div>
+        <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:50%;background:var(--a)"></div></div><span class="bv">50.0%</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ DEMOGRAFÍA ═══════════ -->
+<div id="s-demo" class="sec">
+  <div class="kgrid">
+    <div class="kpi"><div class="kl">Residencia media Belén</div><div class="kv">25.4 años</div><div class="ks">mediana 25 años</div></div>
+    <div class="kpi t"><div class="kl">Residencia media Yurimaguas</div><div class="kv">27.2 años</div><div class="ks">mediana 29.5 años</div></div>
+    <div class="kpi a"><div class="kl">Residencia media Punchana</div><div class="kv">19.1 años</div><div class="ks">mediana 15 años</div></div>
+    <div class="kpi r"><div class="kl">Residencia media SJB</div><div class="kv">12.7 años</div><div class="ks">mediana solo 8 años</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Años de residencia en comunidad (mediana y media)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Media</span><span class="li"><span class="ld" style="background:#BA7517"></span>Mediana</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-resid" role="img" aria-label="Años de residencia por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Composición del hogar (media de personas)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Hombres</span><span class="li"><span class="ld" style="background:#D85A30"></span>Mujeres</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Niños ≤17</span><span class="li"><span class="ld" style="background:#BA7517"></span>Adultos mayores</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-hogar" role="img" aria-label="Composición del hogar por distrito">Datos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Sexo del jefe de hogar (%)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Masculino</span><span class="li"><span class="ld" style="background:#D85A30"></span>Femenino</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-sexo" role="img" aria-label="Sexo del jefe de hogar">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Edad estimada del jefe de hogar (años promedio)</div>
+      <div class="cs">Calculada a partir de la media del año de nacimiento vs. 2025</div>
+      <div class="bars" style="margin-top:8px">
+        <div class="br"><span class="bl">Yurimaguas</span><div class="bt"><div class="bf" style="width:100%;background:var(--p)"></div></div><span class="bv">~56 años</span></div>
+        <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:87%;background:var(--b)"></div></div><span class="bv">~49 años</span></div>
+        <div class="br"><span class="bl">Punchana</span><div class="bt"><div class="bf" style="width:87%;background:var(--t)"></div></div><span class="bv">~49 años</span></div>
+        <div class="br"><span class="bl">San Juan Bautista</span><div class="bt"><div class="bf" style="width:89%;background:var(--c)"></div></div><span class="bv">~50 años</span></div>
+      </div>
+      <div class="ins"><p>Yurimaguas tiene la población más envejecida (media año nac. 1969), con mayor variabilidad etaria (DE=15 años) y mayor proporción de adultos mayores (mediana 1 en hogar vs 0 en los otros distritos).</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Pertenencia a comunidad indígena y relación con jefe de hogar</div>
+    <div class="g2" style="margin-bottom:0">
+      <div>
+        <div class="cs">% pertenece a comunidad indígena</div>
+        <table class="tbl">
+          <thead><tr><th>Distrito</th><th>No</th><th>Sí</th><th>Pueblo</th></tr></thead>
+          <tbody>
+            <tr><td>Belén</td><td>100.0%</td><td>0.0%</td><td>—</td></tr>
+            <tr><td>Yurimaguas</td><td>98.8%</td><td>1.2%</td><td>Kukama (3)</td></tr>
+            <tr><td>Punchana</td><td>93.0%</td><td>7.0%</td><td>Kukama (18)</td></tr>
+            <tr><td>San Juan Bautista</td><td>99.6%</td><td>0.4%</td><td>Kukama (1)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="cs">Relación del encuestado con el jefe de hogar</div>
+        <table class="tbl">
+          <thead><tr><th>Categoría</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>SJB</th></tr></thead>
+          <tbody>
+            <tr><td>Jefe/a de hogar</td><td>73.6%</td><td>52.7%</td><td>79.0%</td><td>69.9%</td></tr>
+            <tr><td>Esposa/o o conviviente</td><td>20.2%</td><td>25.2%</td><td>16.7%</td><td>26.3%</td></tr>
+            <tr><td>Hijo/a del jefe/a</td><td>6.2%</td><td>20.9%</td><td>4.3%</td><td>3.9%</td></tr>
+            <tr><td>Nieto/a</td><td>0.0%</td><td>1.2%</td><td>0.0%</td><td>0.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SOCIOECONÓMICO ═══════════ -->
+<div id="s-socio" class="sec">
+  <div class="kgrid">
+    <div class="kpi"><div class="kl">Gasto semanal mediano Belén</div><div class="kv">S/250</div></div>
+    <div class="kpi t"><div class="kl">Gasto semanal mediano Yurimaguas</div><div class="kv">S/225</div></div>
+    <div class="kpi a"><div class="kl">Gasto semanal mediano Punchana</div><div class="kv">S/200</div></div>
+    <div class="kpi r"><div class="kl">Gasto semanal mediano SJB</div><div class="kv">S/300</div><div class="ks">Media S/405 (mayor variabilidad)</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Nivel educativo del jefe de hogar (%)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Superior completa</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Sup. técnico</span><span class="li"><span class="ld" style="background:#BA7517"></span>Secundaria completa</span><span class="li"><span class="ld" style="background:#D85A30"></span>Primaria/sin educ.</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-educ" role="img" aria-label="Nivel educativo por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Principal fuente de ingresos del hogar</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Empleo asalariado</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Act. no agrícolas</span><span class="li"><span class="ld" style="background:#BA7517"></span>Agricultura/pesca</span><span class="li"><span class="ld" style="background:#888780"></span>Otros</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-ingreso" role="img" aria-label="Fuente de ingresos por distrito">Datos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Gasto mensual en alimentación (mediana, S/)</div>
+      <div class="cs">SJB tiene el mayor gasto alimentario (mediana S/900)</div>
+      <div class="cw" style="height:170px"><canvas id="c-alimentos" role="img" aria-label="Gasto alimentario mensual por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Uso del móvil para transacciones financieras</div>
+      <div class="cs">% de hogares que realizó pagos/transferencias por celular en últimos 12 meses</div>
+      <div class="bars" style="margin-top:8px">
+        <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:84.5%;background:var(--b)"></div></div><span class="bv">84.5%</span></div>
+        <div class="br"><span class="bl">Punchana</span><div class="bt"><div class="bf" style="width:80.9%;background:var(--t)"></div></div><span class="bv">80.9%</span></div>
+        <div class="br"><span class="bl">San Juan Bautista</span><div class="bt"><div class="bf" style="width:80.3%;background:var(--c)"></div></div><span class="bv">80.3%</span></div>
+        <div class="br"><span class="bl">Yurimaguas</span><div class="bt"><div class="bf" style="width:57.8%;background:var(--p)"></div></div><span class="bv">57.8%</span></div>
+      </div>
+      <div class="ins-a ins"><p>Yurimaguas tiene baja adopción de pagos digitales (57.8%) vinculada a menor tenencia de celular (58.9%). Los otros 3 distritos superan el 80%, facilitando estrategias de salud digital.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Situación de ingresos – suficiencia percibida (%)</div>
+    <div class="cw" style="height:200px"><canvas id="c-suficiencia" role="img" aria-label="Suficiencia de ingresos por distrito">Datos.</canvas></div>
+  </div>
+</div>
+
+<!-- ═══════════ VIVIENDA Y ACTIVOS ═══════════ -->
+<div id="s-vivienda" class="sec">
+  <div class="kgrid">
+    <div class="kpi t"><div class="kl">Material noble pared (Yurimaguas)</div><div class="kv">87.2%</div></div>
+    <div class="kpi"><div class="kl">Material noble pared (SJB)</div><div class="kv">68.3%</div></div>
+    <div class="kpi a"><div class="kl">Calamina/zinc techo</div><div class="kv">>96%</div><div class="ks">Los 4 distritos</div></div>
+    <div class="kpi r"><div class="kl">Piso tierra (Yurimaguas/SJB)</div><div class="kv">11.2%</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Tipo de pared de la vivienda (%)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Ladrillo/cemento</span><span class="li"><span class="ld" style="background:#D85A30"></span>Madera</span><span class="li"><span class="ld" style="background:#888780"></span>Otro</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-pared" role="img" aria-label="Tipo de pared por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Tipo de piso de la vivienda (%)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Cemento</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Loseta/cerámica</span><span class="li"><span class="ld" style="background:#D85A30"></span>Tierra/arena</span><span class="li"><span class="ld" style="background:#888780"></span>Madera</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-piso" role="img" aria-label="Tipo de piso por distrito">Datos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Tenencia de bienes en el hogar (%)</div>
+    <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Belén</span><span class="li"><span class="ld" style="background:#534AB7"></span>Yurimaguas</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Punchana</span><span class="li"><span class="ld" style="background:#D85A30"></span>San Juan Bautista</span></div>
+    <div class="cw" style="height:230px"><canvas id="c-bienes" role="img" aria-label="Tenencia de bienes por distrito">Datos.</canvas></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Combustibles usados para cocinar</div>
+      <div class="cs">% de hogares según combinación de combustible principal</div>
+      <table class="tbl">
+        <thead><tr><th>Combustible</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>SJB</th></tr></thead>
+        <tbody>
+          <tr><td>Solo gas</td><td>54.3%</td><td>30.2%</td><td>59.1%</td><td>10.4%</td></tr>
+          <tr><td>Leña+gas</td><td>36.0%</td><td>55.8%</td><td>30.0%</td><td>55.2%</td></tr>
+          <tr><td>Gas+electricidad</td><td>0.4%</td><td>9.3%</td><td>0.0%</td><td>23.2%</td></tr>
+          <tr><td>Solo leña</td><td>8.9%</td><td>3.1%</td><td>10.9%</td><td>8.5%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="ct">Acceso a electricidad y horas de servicio</div>
+      <table class="tbl">
+        <thead><tr><th>Indicador</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>SJB</th></tr></thead>
+        <tbody>
+          <tr><td>Con electricidad pública</td><td>98.8%</td><td>99.6%</td><td>97.3%</td><td>97.3%</td></tr>
+          <tr><td>Horas/día media</td><td>24.0h</td><td>23.9h</td><td>23.3h</td><td>23.8h</td></tr>
+          <tr><td>Mínimo reportado</td><td>24h</td><td>2h</td><td>2h</td><td>4h</td></tr>
+          <tr><td>Outliers (hogares <24h)</td><td>0</td><td>1</td><td>8</td><td>4</td></tr>
+        </tbody>
+      </table>
+      <div class="ins"><p>Punchana es el único con 8 hogares de electricidad intermitente, riesgo para el almacenamiento de vacunas y medicamentos a nivel domiciliario.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SALUD Y MALARIA ═══════════ -->
+<div id="s-salud" class="sec">
+  <div class="kgrid">
+    <div class="kpi t"><div class="kl">Acepta fumigación (promedio)</div><div class="kv">~95%</div><div class="ks">Yurimaguas lidera: 98.4%</div></div>
+    <div class="kpi r"><div class="kl">Fumigación reciente SJB (&lt;3 meses)</div><div class="kv">1.2%</div><div class="ks">Punchana 35.0% · Belén 26.7%</div></div>
+    <div class="kpi a"><div class="kl">Consulta inmediata SJB</div><div class="kv">90.3%</div><div class="ks">vs Belén 49.2%</div></div>
+    <div class="kpi p"><div class="kl">Prueba necesaria ante fiebre SJB</div><div class="kv">98.5%</div><div class="ks">Belén 66.3% (menor disposición)</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Conducta ante síntomas de fiebre/malaria/dengue (%)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#1D9E75"></span>Va inmediato al establecimiento de salud</span><span class="li"><span class="ld" style="background:#BA7517"></span>Va a farmacia</span><span class="li"><span class="ld" style="background:#D85A30"></span>Trata en casa</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-conducta" role="img" aria-label="Conducta ante fiebre por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Recencia de la última fumigación en la comunidad</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#1D9E75"></span>&lt;3 meses</span><span class="li"><span class="ld" style="background:#378ADD"></span>3-5 meses</span><span class="li"><span class="ld" style="background:#BA7517"></span>6-11 meses</span><span class="li"><span class="ld" style="background:#D85A30"></span>≥1 año</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-fumig" role="img" aria-label="Recencia de fumigación por distrito">Datos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Importancia percibida de acciones preventivas (% bastante/extremadamente)</div>
+      <div class="cw" style="height:200px"><canvas id="c-importancia" role="img" aria-label="Importancia de acciones preventivas por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Disponibilidad de pruebas diagnósticas en la posta</div>
+      <div class="cs">Solo hogares que alguna vez fueron a posta por fiebre</div>
+      <div class="cw" style="height:200px"><canvas id="c-pruebas" role="img" aria-label="Disponibilidad de pruebas diagnósticas">Datos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Medidas de protección contra mosquitos (%)</div>
+      <div class="cw" style="height:200px"><canvas id="c-protec" role="img" aria-label="Medidas de protección por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Síntomas depresivos en los últimos 6 meses</div>
+      <div class="cs">% que reporta "varios días" o "más de la mitad" del tiempo</div>
+      <div class="bars" style="margin-top:8px">
+        <div style="font-size:11px;color:var(--n3);margin-bottom:6px;font-weight:500">Poco interés o placer en hacer cosas</div>
+        <div class="br"><span class="bl">San Juan Bautista</span><div class="bt"><div class="bf" style="width:100%;background:var(--r)"></div></div><span class="bv">36.3%</span></div>
+        <div class="br"><span class="bl">Yurimaguas</span><div class="bt"><div class="bf" style="width:46%;background:var(--a)"></div></div><span class="bv">16.7%</span></div>
+        <div class="br"><span class="bl">Punchana</span><div class="bt"><div class="bf" style="width:40%;background:var(--p)"></div></div><span class="bv">14.4%</span></div>
+        <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:37%;background:var(--b)"></div></div><span class="bv">13.5%</span></div>
+        <div style="font-size:11px;color:var(--n3);margin:8px 0 6px;font-weight:500">Sentirse decaído, deprimido o sin esperanza</div>
+        <div class="br"><span class="bl">San Juan Bautista</span><div class="bt"><div class="bf" style="width:100%;background:var(--r)"></div></div><span class="bv">37.8%</span></div>
+        <div class="br"><span class="bl">Yurimaguas</span><div class="bt"><div class="bf" style="width:48%;background:var(--a)"></div></div><span class="bv">18.2%</span></div>
+        <div class="br"><span class="bl">Punchana</span><div class="bt"><div class="bf" style="width:40%;background:var(--p)"></div></div><span class="bv">15.2%</span></div>
+        <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:27%;background:var(--b)"></div></div><span class="bv">10.5%</span></div>
+      </div>
+      <div class="ins-r ins"><p>SJB presenta carga alta de síntomas depresivos consistente en ambos indicadores (37-38%), factor que puede limitar la adopción de prácticas preventivas. Prioridad para salud mental.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Hospitalización y morbilidad – indicadores clave</div>
+    <table class="tbl">
+      <thead><tr><th>Indicador</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>San Juan B.</th></tr></thead>
+      <tbody>
+        <tr><td>Hospitalización últimos 12 meses</td><td>8.1%</td><td>19.0%</td><td>2.3%</td><td>6.6%</td></tr>
+        <tr><td>Enfermedad/lesión últimos 6 meses</td><td>16.3%</td><td>15.9%</td><td>2.7%</td><td>5.8%</td></tr>
+        <tr><td>Dengue diagnosticado (de enfermos)</td><td>2.4%</td><td>29.3%</td><td>0.0%</td><td>20.0%</td></tr>
+        <tr><td>Malaria diagnosticada (de enfermos)</td><td>2.4%</td><td>2.4%</td><td>0.0%</td><td>20.0%</td></tr>
+        <tr><td>Atención brigada de salud móvil</td><td>3.9%</td><td>2.7%</td><td>3.1%</td><td>2.3%</td></tr>
+        <tr><td>Uso medicamentos/salud (último mes)</td><td>22.5%</td><td>51.2%</td><td>12.5%</td><td>23.6%</td></tr>
+        <tr><td>Visitas posta últimos 6 meses (media días)</td><td>1.6</td><td>1.1</td><td>0.7</td><td>0.9</td></tr>
+        <tr><td>Barrera: tiempo de espera muy largo</td><td>12.5%</td><td>53.6%</td><td>14.3%</td><td>66.7%</td></tr>
+        <tr><td>Barrera: mala atención</td><td>35.0%</td><td>28.6%</td><td>42.9%</td><td>22.2%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════ CLIMA ═══════════ -->
+<div id="s-clima" class="sec">
+  <div class="kgrid">
+    <div class="kpi r"><div class="kl">Ola de calor percibida SJB</div><div class="kv">89.2%</div><div class="ks">bastante/mucho</div></div>
+    <div class="kpi a"><div class="kl">CC afecta brotes SJB</div><div class="kv">79.1%</div><div class="ks">bastante/extremadamente</div></div>
+    <div class="kpi t"><div class="kl">CC afecta brotes – intervención</div><div class="kv">66.7%</div><div class="ks">vs 37.4% grupo control</div></div>
+    <div class="kpi p"><div class="kl">Sin conocimiento CC SJB</div><div class="kv">47.5%</div><div class="ks">Pese a mayor percepción experiencial</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Conocimiento sobre cambio climático y calentamiento global</div>
+      <div class="legend leg"><span class="li"><span class="ld" style="background:#888780"></span>Nada</span><span class="li"><span class="ld" style="background:#BA7517"></span>Poco</span><span class="li"><span class="ld" style="background:#378ADD"></span>Moderado</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Bastante/mucho</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-cc-conoc" role="img" aria-label="Conocimiento cambio climático por distrito">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Impactos del CC percibidos en últimos 2 años (principales)</div>
+      <div class="cs">Combinación más frecuente reportada en cada distrito</div>
+      <div class="dcgrid">
+        <div class="dc" style="background:var(--bl)"><div class="dc-badge pill pb">Control – Belén</div><div class="dc-h">Ola de calor (23.6%)</div><p style="font-size:11px;color:var(--bd)">+ lluvia+calor 15.9%; + lluvia+inund+calor 29.5%</p></div>
+        <div class="dc" style="background:var(--pl)"><div class="dc-badge pill pp">Control – Yurimaguas</div><div class="dc-h">Lluvia+inundación+calor (57.4%)</div><p style="font-size:11px;color:var(--pd)">Yurimaguas más afectado por inundaciones</p></div>
+        <div class="dc" style="background:var(--tl)"><div class="dc-badge pill pt">Intervención – Punchana</div><div class="dc-h">Lluvias+ola de calor (35.4%)</div><p style="font-size:11px;color:var(--td)">Sin inundaciones como componente principal</p></div>
+        <div class="dc" style="background:var(--cl)"><div class="dc-badge pill" style="background:var(--cl);color:var(--cd)">Intervención – SJB</div><div class="dc-h">Lluvia+ola de calor (50.2%)</div><p style="font-size:11px;color:var(--cd)">Alta percepción de impacto: 73.7% afectado</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Percepciones sobre efectos del CC (% bastante o extremadamente)</div>
+    <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Belén</span><span class="li"><span class="ld" style="background:#534AB7"></span>Yurimaguas</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Punchana</span><span class="li"><span class="ld" style="background:#D85A30"></span>San Juan Bautista</span></div>
+    <div class="cw" style="height:220px"><canvas id="c-cc-perc" role="img" aria-label="Percepciones del cambio climático por distrito">Datos.</canvas></div>
+    <div class="ins"><p>Yurimaguas es consistentemente el distrito con menor percepción del impacto del CC en todos los indicadores, pese a tener la mayor tasa de dengue 2025. Requiere estrategias de sensibilización ambiental específicas.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════ COMUNIDAD ═══════════ -->
+<div id="s-comunidad" class="sec">
+  <div class="kgrid">
+    <div class="kpi"><div class="kl">Grupos voluntarios Belén</div><div class="kv">58.5%</div></div>
+    <div class="kpi t"><div class="kl">Grupos voluntarios SJB</div><div class="kv">51.4%</div></div>
+    <div class="kpi a"><div class="kl">Grupos mujeres Punchana</div><div class="kv">52.9%</div></div>
+    <div class="kpi r"><div class="kl">Participa capac. salud SJB</div><div class="kv">1.5%</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Fuentes de información sobre prevención malaria/dengue (últimos 6 meses)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>TV</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Promotores salud</span><span class="li"><span class="ld" style="background:#BA7517"></span>Radio</span><span class="li"><span class="ld" style="background:#D85A30"></span>Nada</span><span class="li"><span class="ld" style="background:#888780"></span>Redes sociales</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-info" role="img" aria-label="Fuentes de información preventiva">Datos.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Participación en programas de capacitación en salud (último año)</div>
+      <div class="bars" style="margin-top:8px">
+        <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:100%;background:var(--b)"></div></div><span class="bv">12.4%</span></div>
+        <div class="br"><span class="bl">Yurimaguas</span><div class="bt"><div class="bf" style="width:65%;background:var(--p)"></div></div><span class="bv">8.1%</span></div>
+        <div class="br"><span class="bl">Punchana</span><div class="bt"><div class="bf" style="width:28%;background:var(--t)"></div></div><span class="bv">3.5%</span></div>
+        <div class="br"><span class="bl">San Juan Bautista</span><div class="bt"><div class="bf" style="width:12%;background:var(--c)"></div></div><span class="bv">1.5%</span></div>
+      </div>
+      <div class="ins-r ins"><p>Participación muy baja en todos los distritos. Los distritos de intervención tienen cobertura 4-8x menor que Belén, pese a mayor vulnerabilidad sanitaria.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Existencia de grupos comunitarios – todos los tipos</div>
+    <div class="cs">% de hogares que reporta existencia del grupo en su comunidad (solo entre quienes tienen grupos voluntarios activos)</div>
+    <table class="tbl">
+      <thead><tr><th>Tipo de grupo</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>San Juan B.</th><th>Nota</th></tr></thead>
+      <tbody>
+        <tr><td>Grupos voluntarios en general</td><td>58.5%</td><td>29.1%</td><td>19.8%</td><td>51.4%</td><td>—</td></tr>
+        <tr><td>Grupo de mujeres / club madres</td><td>21.9%</td><td>4.0%</td><td>52.9%</td><td>10.3%</td><td>Punchana lidera</td></tr>
+        <tr><td>Grupo comunitario de limpieza</td><td>~0.7%</td><td>2.7%</td><td>2.0%</td><td>10.3%</td><td>SJB más activo</td></tr>
+        <tr><td>Comité de salud</td><td>0.0%</td><td>4.0%</td><td>0.0%</td><td>1.6%</td><td>Casi inexistente</td></tr>
+        <tr><td>Grupo juvenil</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td>No existe</td></tr>
+        <tr><td>Cooperativa agrícola</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td>No existe</td></tr>
+        <tr><td>Grupo ahorro/crédito</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td>No existe</td></tr>
+        <tr><td>Comité ambiental</td><td>1.2%</td><td>1.2%</td><td>0.4%</td><td>0.4%</td><td>Mínimo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="ct">Programas de formación comunitaria – cobertura y responsable</div>
+    <table class="tbl">
+      <thead><tr><th>Programa</th><th>Conocen (Belén)</th><th>Conocen (Yurimaguas)</th><th>Conocen (Punchana)</th><th>Conocen (SJB)</th><th>Responsable</th></tr></thead>
+      <tbody>
+        <tr><td>Formación malaria/dengue</td><td>96.9%</td><td>95.2%</td><td>88.9%</td><td>100.0%</td><td>Gobierno MINSA/municipio (96-100%)</td></tr>
+        <tr><td>Visitas trabajadores comunitarios</td><td>62.5%</td><td>23.8%</td><td>33.3%</td><td>75.0%</td><td>Gobierno 100%</td></tr>
+        <tr><td>Formación fumigación/abate</td><td>34.4%</td><td>61.9%</td><td>77.8%</td><td>50.0%</td><td>Gobierno >84%</td></tr>
+        <tr><td>Limpieza local</td><td>18.8%</td><td>38.1%</td><td>0.0%</td><td>25.0%</td><td>Gobierno 87-100%</td></tr>
+        <tr><td>Cambio climático</td><td>0.0%</td><td>14.3%</td><td>0.0%</td><td>50.0%</td><td>Gobierno (mínimo)</td></tr>
+        <tr><td>Reuniones salud/higiene/CC</td><td>15.6%</td><td>14.3%</td><td>0.0%</td><td>50.0%</td><td>Gobierno + comunidad (SJB)</td></tr>
+        <tr><td>Instalación mosquiteros</td><td>0.0%</td><td>4.8%</td><td>0.0%</td><td>0.0%</td><td>Casi inexistente</td></tr>
+      </tbody>
+    </table>
+    <div class="ins"><p>Los programas de formación sobre cambio climático son prácticamente inexistentes en Belén y Punchana. El gobierno es el actor casi exclusivo en todos los programas, con baja visibilidad de ONG u otros actores.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════ AGUA Y SANEAMIENTO ═══════════ -->
+<div id="s-agua" class="sec">
+  <div class="kgrid">
+    <div class="kpi t"><div class="kl">Agua entubada en casa SJB</div><div class="kv">86.1%</div></div>
+    <div class="kpi r"><div class="kl">Disponibilidad agua Belén</div><div class="kv">4.5 h/día</div><div class="ks">Punchana: 4.1 h/día</div></div>
+    <div class="kpi a"><div class="kl">Disponibilidad agua Yurimaguas</div><div class="kv">23.7 h/día</div></div>
+    <div class="kpi p"><div class="kl">Agua superficial (riesgo) – intervención</div><div class="kv">24.6%</div><div class="ks">vs 3.5% grupo control</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Disponibilidad diaria de agua entubada (horas/día)</div>
+      <div class="cs">Mediana y media – baja disponibilidad crea riesgo de almacenamiento inseguro</div>
+      <div class="cw" style="height:180px"><canvas id="c-agua" role="img" aria-label="Disponibilidad de agua por distrito">Datos.</canvas></div>
+      <div class="ins-r ins"><p>Belén (4.5h) y Punchana (4.1h) fuerzan almacenamiento domiciliario. Sin recipientes cubiertos, se generan criaderos del mosquito Aedes aegypti, vector del dengue.</p></div>
+    </div>
+    <div class="card">
+      <div class="ct">Método para desinfectar el agua antes de beberla</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Hervirla</span><span class="li"><span class="ld" style="background:#1D9E75"></span>Agua tratada comprada</span><span class="li"><span class="ld" style="background:#BA7517"></span>Grifo/pilón público</span><span class="li"><span class="ld" style="background:#D85A30"></span>Sin tratamiento</span></div>
+      <div class="cw" style="height:180px"><canvas id="c-agua2" role="img" aria-label="Métodos de desinfección de agua">Datos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Indicadores WASH completos</div>
+    <table class="tbl">
+      <thead><tr><th>Indicador</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>San Juan B.</th></tr></thead>
+      <tbody>
+        <tr><td>Agua entubada en vivienda (Grupo A)</td><td>91.4%</td><td>48.3%</td><td>89.8%</td><td>86.1%</td></tr>
+        <tr><td>Agua tratada comprada (Yurimaguas modelo)</td><td>0.5%</td><td>45.8%</td><td>1.5%</td><td>0.0%</td></tr>
+        <tr><td>Pozo excavado no protegido (riesgo)</td><td>0.0%</td><td>71.4%*</td><td>0.0%</td><td>0.0%</td></tr>
+        <tr><td>Agua superficial (río, lago)</td><td>5.6%*</td><td>0.0%</td><td>23.5%*</td><td>28.6%*</td></tr>
+        <tr><td>Agua de lluvia</td><td>2.8%*</td><td>0.0%</td><td>0.0%</td><td>57.1%*</td></tr>
+        <tr><td>Sin tratamiento domiciliario</td><td>10.9%</td><td>2.7%</td><td>7.0%</td><td>5.0%</td></tr>
+        <tr><td>Hierven el agua</td><td>55.0%</td><td>18.2%</td><td>58.4%</td><td>20.8%</td></tr>
+        <tr><td>Grifo o pilón público</td><td>29.8%</td><td>20.5%</td><td>33.1%</td><td>46.7%</td></tr>
+        <tr><td>Lugar lavado manos: instalación fija en vivienda</td><td colspan="4">Control: 78.9% · Intervención: 69.8% (p=0.0004)</td></tr>
+        <tr><td>Acceso a jabón en lugar de lavado</td><td colspan="4">Dato disponible en base de datos – diferencia significativa entre grupos</td></tr>
+        <tr><td>Desagüe conectado (saneamiento)</td><td colspan="4">Control: 85.5% · Intervención: 78.3% (p=0.022)</td></tr>
+        <tr><td>Letrina o silo</td><td colspan="4">Control: 10.1% · Intervención: 18.4%</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:10px;color:var(--n3);margin-top:6px">* porcentaje dentro del subgrupo Grupo B (fuentes que requieren tratamiento)</div>
+  </div>
+</div>
+
+<!-- ═══════════ GÉNERO Y BIENESTAR ═══════════ -->
+<div id="s-genero" class="sec">
+  <div class="kgrid">
+    <div class="kpi t"><div class="kl">Decisiones conjuntas salud (Punchana)</div><div class="kv">50.6%</div><div class="ks">vs Yurimaguas 32.2%</div></div>
+    <div class="kpi"><div class="kl">Jefatura femenina (Belén)</div><div class="kv">28.3%</div><div class="ks">Punchana solo 16.7%</div></div>
+    <div class="kpi a"><div class="kl">Suficiencia alimentaria "alcanza bien" Yurimaguas</div><div class="kv">48.1%</div><div class="ks">SJB solo 12.4%</div></div>
+    <div class="kpi r"><div class="kl">Ingresos "solo cubren gastos" SJB</div><div class="kv">59.8%</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Toma de decisiones en el hogar – decisiones conjuntas (%)</div>
+      <div class="cs">% que decide "ambos juntos" o "conjuntamente"</div>
+      <div class="cw" style="height:190px"><canvas id="c-decision" role="img" aria-label="Decisiones conjuntas en el hogar por distrito y tipo">Datos.</canvas></div>
+      <div class="ins"><p>Los distritos de intervención (Punchana y SJB) tienen mayor toma de decisiones conjunta en salud, ingresos y gastos (~48-51%), frente a Belén y Yurimaguas (~32-35%). Activo clave para intervenciones que involucran a la pareja.</p></div>
+    </div>
+    <div class="card">
+      <div class="ct">Bienestar subjetivo – suficiencia percibida ("alcanza bien o sobra")</div>
+      <div class="cs">% que reporta que los recursos cubren bien o sobran</div>
+      <div class="cw" style="height:190px"><canvas id="c-bienestar" role="img" aria-label="Bienestar subjetivo por distrito y dimensión">Datos.</canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Suficiencia de ingresos – distribución completa</div>
+    <div class="cw" style="height:200px"><canvas id="c-ingresos2" role="img" aria-label="Suficiencia de ingresos por distrito">Datos.</canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Quién decide sobre la salud de los niños</div>
+    <table class="tbl">
+      <thead><tr><th>Decisor</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>San Juan B.</th></tr></thead>
+      <tbody>
+        <tr><td>Ambos conjuntamente</td><td>30.6%</td><td>36.8%</td><td>47.9%</td><td>34.4%</td></tr>
+        <tr><td>El jefe de familia (hombre)</td><td>22.1%</td><td>36.8%</td><td>25.7%</td><td>41.3%</td></tr>
+        <tr><td>Cónyuge del jefe (mujer)</td><td>24.0%</td><td>11.2%</td><td>21.0%</td><td>24.3%</td></tr>
+        <tr><td>No hay niños en el hogar</td><td>5.4%</td><td>11.6%</td><td>4.7%</td><td>0.0%</td></tr>
+      </tbody>
+    </table>
+    <div class="ins-a ins"><p>En SJB, el 41.3% de decisiones sobre salud infantil las toma el jefe de hogar de forma unilateral (mayor que en otros distritos), lo que puede limitar el acceso de los niños a atención oportuna si el jefe no está disponible.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════ REPORTE CUALITATIVO ═══════════ -->
+<div id="s-cualitativo" class="sec">
+  <div class="sdiv">Personal de salud – Belén y Yurimaguas (Control)</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Fortalezas identificadas (puntuación 1-5)</div>
+      <div class="pbar-grid">
+        <div class="pbar-section">
+          <div class="pbar-title">Fortalezas</div>
+          <div class="pbar-row"><span class="pbar-name">Capacidad operativa territorial</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Articulación comunitaria/intersectorial</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Planificación basada en evidencia</span><div class="pbar-score"><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Aceptación comunitaria</span><div class="pbar-score"><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq off" style="background:var(--a)"></span><span class="psq off" style="background:var(--a)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Motivación del personal</span><div class="pbar-score"><span class="psq on" style="background:var(--g)"></span><span class="psq on" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span></div></div>
+        </div>
+        <div class="pbar-section">
+          <div class="pbar-title">Brechas y necesidades</div>
+          <div class="pbar-row"><span class="pbar-name">Distribución de personal</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Capacitación</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Abastecimiento de insumos</span><div class="pbar-score"><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq off" style="background:var(--a)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Gestión de información</span><div class="pbar-score"><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Comunicación intercultural</span><div class="pbar-score"><span class="psq on" style="background:var(--g)"></span><span class="psq on" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span></div></div>
+        </div>
+        <div class="pbar-section">
+          <div class="pbar-title">Barreras</div>
+          <div class="pbar-row"><span class="pbar-name">Financiamiento</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Rotación de personal</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Condiciones territoriales</span><div class="pbar-score"><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq off" style="background:var(--a)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Factores externos/clima</span><div class="pbar-score"><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Factores socioculturales</span><div class="pbar-score"><span class="psq on" style="background:var(--g)"></span><span class="psq on" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span></div></div>
+        </div>
+        <div class="pbar-section">
+          <div class="pbar-title">Recomendaciones</div>
+          <div class="pbar-row"><span class="pbar-name">Fortalecer personal (ACS, inspectores)</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Asegurar financiamiento</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Capacitación (normas/CC)</span><div class="pbar-score"><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Gestión territorial y vigilancia</span><div class="pbar-score"><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Articulación comunitaria</span><div class="pbar-score"><span class="psq on" style="background:var(--g)"></span><span class="psq on" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span><span class="psq off" style="background:var(--g)"></span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Citas clave del personal de salud</div>
+      <div class="quote">"Los resultados pueden tardar entre cuatro y cinco días… pero el personal ha desarrollado capacidades para identificar síntomas e iniciar manejo preliminar."<div class="qauth">Lili Cachique Martínez, Belén</div></div>
+      <div class="quote">"Es fundamental fortalecer la articulación entre autoridades, sector salud y sociedad civil… el trabajo en equipo, la mancomunidad y la generación de sinergias son competencias clave."<div class="qauth">Kennedy Tarazona, Yurimaguas</div></div>
+      <div class="quote">"Solo 18 [del personal] realizan visitas domiciliarias… mientras el resto del personal se concentra en labores intramurales."<div class="qauth">Charles Hidalgo, técnico en enfermería – Yurimaguas</div></div>
+      <div class="quote">"La disponibilidad de medicamentos es variable… y a veces se debe esperar el envío desde instancias superiores."<div class="qauth">Lili Cachique Martínez, Belén</div></div>
+      <div class="quote">"En invierno aumentan los criaderos y los casos… lo que refleja el impacto del clima en la enfermedad."<div class="qauth">Charles Hidalgo, Yurimaguas</div></div>
+    </div>
+  </div>
+
+  <div class="sdiv">Personal de salud – Punchana e intervención</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Prioridades Punchana (puntuación 1-5)</div>
+      <div class="pbar-section" style="background:transparent">
+        <div class="pbar-title">Fortalezas</div>
+        <div class="pbar-row"><span class="pbar-name">Capacidad operativa territorial</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Disponibilidad de insumos</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Articulación con ACS</span><div class="pbar-score"><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq on" style="background:var(--b)"></span><span class="psq off" style="background:var(--b)"></span></div></div>
+        <div class="pbar-title" style="margin-top:8px">Barreras críticas</div>
+        <div class="pbar-row"><span class="pbar-name">Insuficiencia de personal</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Resistencia de la población</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Condiciones territoriales</span><div class="pbar-score"><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq off" style="background:var(--a)"></span></div></div>
+      </div>
+      <div class="quote">"Existe resistencia de algunos hogares a permitir el ingreso del personal de salud."<div class="qauth">Margot Wansi, Punchana</div></div>
+    </div>
+    <div class="card">
+      <div class="ct">Prioridades GOREL (departamental)</div>
+      <div class="pbar-section" style="background:transparent">
+        <div class="pbar-title">Fortalezas</div>
+        <div class="pbar-row"><span class="pbar-name">Análisis epidemiológico</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Herramientas tecnológicas</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+        <div class="pbar-title" style="margin-top:8px">Brechas críticas</div>
+        <div class="pbar-row"><span class="pbar-name">Provisión de medicamentos</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Articulación intersectorial</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Determinantes sociales</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+        <div class="pbar-row"><span class="pbar-name">Centralización de procesos</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+      </div>
+      <div class="quote">"Factores como la pobreza y la falta de acceso a agua segura limitan la efectividad de las intervenciones."<div class="qauth">Carlos Álvarez Antonio, GOREL</div></div>
+    </div>
+  </div>
+
+  <div class="sdiv">Agentes Comunitarios de Salud (ACS)</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ct">ACS – Yurimaguas</div>
+      <div class="pbar-grid">
+        <div class="pbar-section">
+          <div class="pbar-title">Fortalezas</div>
+          <div class="pbar-row"><span class="pbar-name">Aceptación comunitaria</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Articulación con establecimiento</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+        </div>
+        <div class="pbar-section">
+          <div class="pbar-title">Brechas críticas</div>
+          <div class="pbar-row"><span class="pbar-name">Falta de insumos</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Capacitación insuficiente</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Sin autonomía diagnóstica</span><div class="pbar-score"><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq off" style="background:var(--a)"></span></div></div>
+        </div>
+      </div>
+      <div class="quote">"Carecemos de láminas, lancetas y medicamentos… hemos solicitado botiquines sin recibir respuesta."<div class="qauth">Heiner Sabra Córdoba, ACS Yurimaguas</div></div>
+      <div class="quote">"Quisiera aprender a leer las láminas… actualmente solo puedo tomar las muestras."<div class="qauth">Heiner Sabra Córdoba, ACS Yurimaguas</div></div>
+    </div>
+    <div class="card">
+      <div class="ct">ACS – Punchana y San Juan Bautista</div>
+      <div class="pbar-grid">
+        <div class="pbar-section">
+          <div class="pbar-title">Fortalezas</div>
+          <div class="pbar-row"><span class="pbar-name">Cobertura territorial</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Experiencia comunitaria</span><div class="pbar-score"><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq on" style="background:var(--t)"></span><span class="psq off" style="background:var(--t)"></span></div></div>
+        </div>
+        <div class="pbar-section">
+          <div class="pbar-title">Brechas críticas</div>
+          <div class="pbar-row"><span class="pbar-name">Sin formación en último año (SJB)</span><div class="pbar-score"><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span><span class="psq on" style="background:var(--r)"></span></div></div>
+          <div class="pbar-row"><span class="pbar-name">Capacitación solo anual (Punchana)</span><div class="pbar-score"><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq on" style="background:var(--a)"></span><span class="psq off" style="background:var(--a)"></span></div></div>
+        </div>
+      </div>
+      <div class="quote">"Durante el último año no recibió formación directa."<div class="qauth">Josman Henry Marichin, ACS San Juan Bautista</div></div>
+      <div class="quote">"Los entrenamientos se realizan de manera anual."<div class="qauth">Juan Mayer Cumapa, ACS Punchana</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Paradojas clave del estudio – análisis integrado</div>
+    <table class="tbl">
+      <thead><tr><th>Paradoja</th><th>Explicación</th></tr></thead>
+      <tbody>
+        <tr><td>Intervención gasta más pero se siente más pobre</td><td>Mayor gasto (S/332 vs S/267) pero mayor presión financiera. SJB tiene ingresos más inestables y precios más altos.</td></tr>
+        <tr><td>Intervención consulta más pero percibe peor atención</td><td>Mayor demanda (73.1% vs 51.7%) satura el sistema. La mayor utilización expone debilidades en tiempos de espera.</td></tr>
+        <tr><td>Yurimaguas tiene peor dengue pero menos percepción de riesgo</td><td>Tasa 1.36% en 2025, pero 37.6% percibe urgencia de consultar. Posible normalización de la enfermedad.</td></tr>
+        <tr><td>Intervención valora más prevención pero vive en condiciones más precarias</td><td>Mayor valoración de fumigar (76.9% vs 62.8%) pero menor saneamiento (78.3% vs 85.5%) y más agua insegura.</td></tr>
+        <tr><td>Punchana tiene agua entubada pero mayor tiempo para recolectar</td><td>El agua entubada es para otros usos; para beber usan fuentes más lejanas (prom. 24.3 min ida y vuelta).</td></tr>
+        <tr><td>Control más pobre en términos INEI pero mejor en suficiencia percibida</td><td>Yurimaguas 31.7% pobreza, Belén 26.5% (INEI 2020) vs Punchana 19.5%, SJB 21.2%; pero mayor satisfacción con recursos básicos en control.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════ 43 INDICADORES CLAVE ═══════════ -->
+<div id="s-indicadores" class="sec">
+  <div class="kgrid">
+    <div class="kpi t"><div class="kl">Indicadores con dif. significativa</div><div class="kv">~30 de 43</div></div>
+    <div class="kpi r"><div class="kl">Mayor rezago intervención</div><div class="kv">Vivienda · agua · saneamiento</div></div>
+    <div class="kpi"><div class="kl">Ventaja intervención</div><div class="kv">Agua entubada · consulta · género</div></div>
+    <div class="kpi a"><div class="kl">Sin diferencia</div><div class="kv">Org. comunitarias específicas</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Tabla comparativa de 43 indicadores clave (extracto principal)</div>
+    <div class="cs">Solo se muestran indicadores con diferencia estadísticamente significativa (p &lt; 0.05)</div>
+    <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Código</th><th>Indicador</th><th>Control<br>n=516</th><th>Intervención<br>n=516</th><th>Control-Intervención</th><th>Valor p</th><th>Prueba estadística</th></tr></thead>
+      <tbody>
+        <!-- B10 -->
+        <tr style="font-weight:600"><td>B10</td><td>Promedio de gasto del hogar en los últimos 7 días (soles)</td><td>267.13</td><td>332.43</td><td>-65.30</td><td>0.0001*</td><td>Kolmogórov-Smirnov para 2 muestras independientes</td></tr>
+        <!-- B2 -->
+        <tr style="font-weight:600"><td rowspan="10">B2</td><td rowspan="10">Frecuencia del nivel educativo del jefe de hogar</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0160*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Educación superior completa</td><td>22.90%</td><td>20.20%</td><td>2.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No sabe</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No tiene educación</td><td>0.80%</td><td>1.60%</td><td>-0.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Primaria completa</td><td>12.20%</td><td>6.80%</td><td>5.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Primaria incompleta</td><td>2.90%</td><td>2.90%</td><td>0.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Secundaria completa</td><td>32.80%</td><td>42.80%</td><td>-10.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Secundaria incompleta</td><td>12.80%</td><td>11.80%</td><td>1.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Superior técnico completo</td><td>13.00%</td><td>11.80%</td><td>1.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Superior técnico incompleto</td><td>2.50%</td><td>2.10%</td><td>0.4%</td><td></td><td></td></tr>
+        <!-- B13.2.1 -->
+        <tr style="font-weight:600"><td>B13.2.1</td><td>Proporción de jefe de hogar u otros de su hogar que tomaron medicamento o fue al establecimiento de salud (último mes)</td><td>36.80%</td><td>18.00%</td><td>18.8%</td><td>0.0000*</td><td>Prueba de diferencia de proporciones</td></tr>
+        <!-- C2 -->
+        <tr style="font-weight:600"><td>C2</td><td>Proporción de hogares que cuentan con electricidad en el pueblo</td><td>99.20%</td><td>97.30%</td><td>1.9%</td><td>0.0109*</td><td>Prueba de diferencia de proporciones</td></tr>
+        <!-- C7 -->
+        <tr style="font-weight:600"><td rowspan="6">C7</td><td rowspan="6">Frecuencia de tipo de techo</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0450*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Aligerado/cemento</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Calamina o zinc</td><td>96.70%</td><td>98.60%</td><td>-1.9%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Cemento</td><td>2.30%</td><td>0.40%</td><td>1.9%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Tejas de arcilla</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Vegetal a palma (Irapay / Crisneja)</td><td>0.60%</td><td>1.00%</td><td>-0.4%</td><td></td><td></td></tr>
+        <!-- C8 -->
+        <tr style="font-weight:600"><td rowspan="5">C8</td><td rowspan="5">Frecuencia de tipo de pared</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0049*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Calamina</td><td>0.60%</td><td>0.40%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Costal</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Ladrillo o cemento (material noble)</td><td>78.90%</td><td>70.00%</td><td>8.9%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Madera</td><td>20.30%</td><td>29.70%</td><td>-9.4%</td><td></td><td></td></tr>
+        <!-- C9 -->
+        <tr style="font-weight:600"><td rowspan="6">C9</td><td rowspan="6">Frecuencia de tipo de piso</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0029*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Cemento</td><td>62.80%</td><td>62.00%</td><td>0.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Losetas / cerámica</td><td>19.60%</td><td>16.10%</td><td>3.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Machimbrado o madera pulida</td><td>2.90%</td><td>8.30%</td><td>-5.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Tablas de madera, pona, u otras tablas de palma</td><td>6.60%</td><td>5.20%</td><td>1.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Tierra o arena</td><td>8.10%</td><td>8.30%</td><td>-0.2%</td><td></td><td></td></tr>
+        <!-- D1 -->
+        <tr style="font-weight:600"><td rowspan="4">D1</td><td rowspan="4">Frecuencia de impactos del cambio climático que afectan a los hogares (categorías principales)</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Lluvias irregulares, Inundaciones (crecientes), Ola de calor</td><td>43.40%</td><td>11.60%</td><td>31.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Lluvias irregulares, Ola de calor</td><td>8.30%</td><td>42.60%</td><td>-34.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Ninguno</td><td>17.80%</td><td>18.20%</td><td>-0.4%</td><td></td><td></td></tr>
+        <!-- D4 -->
+        <tr style="font-weight:600"><td rowspan="6">D4</td><td rowspan="6">Grado de efecto del cambio climático al brote de malaria o dengue (últimos 2 años)</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Bastante (significativamente)</td><td>35.10%</td><td>53.50%</td><td>-18.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Extremadamente</td><td>2.30%</td><td>13.20%</td><td>-10.9%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Moderadamente</td><td>36.80%</td><td>17.60%</td><td>19.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Para nada</td><td>5.20%</td><td>6.40%</td><td>-1.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Un poco (levemente)</td><td>20.50%</td><td>9.30%</td><td>11.2%</td><td></td><td></td></tr>
+        <!-- E1 -->
+        <tr style="font-weight:600"><td rowspan="4">E1</td><td rowspan="4">Frecuencia de suficiencia de consumo de alimentos del hogar (último mes)</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Alcanzó a las justas para las necesidades de la casa</td><td>58.90%</td><td>74.20%</td><td>-15.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Fue más que suficiente / alcanzó bien y sobró</td><td>38.40%</td><td>23.30%</td><td>15.1%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No alcanzó / no fue suficiente para las necesidades de la casa</td><td>2.70%</td><td>2.50%</td><td>0.2%</td><td></td><td></td></tr>
+        <!-- E2 -->
+        <tr style="font-weight:600"><td rowspan="4">E2</td><td rowspan="4">Frecuencia de la situación de vivienda del hogar (último mes)</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0011*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Alcanzó a las justas para las necesidades de la casa</td><td>58.70%</td><td>69.20%</td><td>-10.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Fue más que suficiente / Alcanzó bien y sobró</td><td>38.80%</td><td>27.90%</td><td>10.9%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No alcanzó / no fue suficiente para las necesidades de la casa</td><td>2.50%</td><td>2.90%</td><td>-0.4%</td><td></td><td></td></tr>
+        <!-- E3 -->
+        <tr style="font-weight:600"><td rowspan="4">E3</td><td rowspan="4">Frecuencia de la atención de salud del hogar (último mes)</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Alcanzó a las justas para las necesidades de la casa</td><td>56.80%</td><td>71.50%</td><td>-14.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Fue más que suficiente / alcanzó bien y sobró</td><td>39.90%</td><td>26.00%</td><td>13.9%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No alcanzó / no fue suficiente para las necesidades de la casa</td><td>3.30%</td><td>2.50%</td><td>0.8%</td><td></td><td></td></tr>
+        <!-- E4 -->
+        <tr style="font-weight:600"><td rowspan="6">E4</td><td rowspan="6">Frecuencia de la situación de ingresos actuales</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0001*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Le permite ahorrar solo un poco</td><td>23.40%</td><td>21.10%</td><td>2.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Le permite generar ahorros</td><td>12.40%</td><td>12.60%</td><td>-0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No es suficiente, necesita usar ahorros</td><td>9.90%</td><td>7.60%</td><td>2.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Realmente no es suficiente, necesita pedir prestado</td><td>5.00%</td><td>0.60%</td><td>4.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Solo cubre los gastos (a las justas)</td><td>49.20%</td><td>58.10%</td><td>-8.9%</td><td></td><td></td></tr>
+        <!-- F1 -->
+        <tr style="font-weight:600"><td rowspan="7">F1</td><td rowspan="7">Frecuencia de la acción usual ante síntomas de fiebre/malaria/dengue</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Ir a la farmacia / botica por un medicamento</td><td>24.00%</td><td>10.30%</td><td>13.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Ir inmediatamente al establecimiento de salud (posta)</td><td>51.70%</td><td>73.10%</td><td>-21.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Ir inmediatamente al establecimiento de salud particular</td><td>0.60%</td><td>0.00%</td><td>0.6%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Nada</td><td>0.20%</td><td>0.40%</td><td>-0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Tomar paracetamol</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Tratar en casa con cuidados personales</td><td>23.30%</td><td>16.30%</td><td>7.0%</td><td></td><td></td></tr>
+        <!-- G1 -->
+        <tr style="font-weight:600"><td rowspan="8">G1</td><td rowspan="8">Frecuencia de la toma de decisiones sobre salud en el hogar</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Ambos juntos</td><td>34.50%</td><td>48.80%</td><td>-14.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">El jefe de hogar, esposo o conviviente</td><td>24.40%</td><td>16.10%</td><td>8.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Jefa y su papá</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Junto con otra persona dentro de la casa</td><td>10.10%</td><td>2.90%</td><td>7.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Junto con otra persona fuera del hogar</td><td>1.60%</td><td>0.00%</td><td>1.6%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">La jefa de hogar, esposa o conviviente</td><td>27.70%</td><td>32.20%</td><td>-4.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Otro miembro del hogar</td><td>1.60%</td><td>0.00%</td><td>1.6%</td><td></td><td></td></tr>
+        <!-- G2 -->
+        <tr style="font-weight:600"><td rowspan="9">G2</td><td rowspan="9">Frecuencia de la toma de decisiones sobre generación de ingresos</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Alguien fuera del hogar/otro</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Alguien más en el hogar</td><td>1.40%</td><td>1.00%</td><td>0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Conjuntamente con alguien más dentro del hogar</td><td>11.20%</td><td>3.70%</td><td>7.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Conjuntamente con alguien más fuera del hogar</td><td>1.90%</td><td>0.20%</td><td>1.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Hombre principal o marido</td><td>25.80%</td><td>17.80%</td><td>8.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Marido y mujer conjuntamente</td><td>30.00%</td><td>47.10%</td><td>-17.1%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Mi hogar no participa en la actividad, así que no se toman decisiones</td><td>0.20%</td><td>0.20%</td><td>0.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Mujer principal o esposa</td><td>29.30%</td><td>30.00%</td><td>-0.7%</td><td></td><td></td></tr>
+        <!-- G3 -->
+        <tr style="font-weight:600"><td rowspan="9">G3</td><td rowspan="9">Frecuencia de la toma de decisiones sobre gastos menores del hogar</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Ambos juntos</td><td>32.20%</td><td>49.40%</td><td>-17.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">El jefe de hogar, esposo o conviviente</td><td>25.40%</td><td>16.90%</td><td>8.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Jefa y su papá</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Junto con otra persona dentro de la casa</td><td>10.70%</td><td>4.50%</td><td>6.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Junto con otra persona fuera del hogar</td><td>1.40%</td><td>0.00%</td><td>1.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">La jefa de hogar, esposa o conviviente</td><td>28.70%</td><td>28.90%</td><td>-0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No hay menores</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Otro miembro del hogar</td><td>1.40%</td><td>0.40%</td><td>1.0%</td><td></td><td></td></tr>
+        <!-- G4 -->
+        <tr style="font-weight:600"><td rowspan="18">G4</td><td rowspan="18">Frecuencia de la toma de decisiones sobre cuidado de salud de niños</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Conjuntamente (jefe de familia y su cónyuge)</td><td>33.70%</td><td>41.10%</td><td>-7.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Cónyuge del encuestado/a</td><td>4.80%</td><td>0.00%</td><td>4.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Cónyuge del jefe de familia</td><td>17.60%</td><td>22.70%</td><td>-5.1%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">El jefe de familia</td><td>29.50%</td><td>33.50%</td><td>-4.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Encuestado/a</td><td>3.50%</td><td>0.00%</td><td>3.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Hija</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Hija de la jefa del hogar</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Hijo</td><td>0.40%</td><td>0.00%</td><td>0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Jefa e hijas mayores</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Junto con alguien fuera del hogar</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">La hija mayor</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">La madre</td><td>0.20%</td><td>0.40%</td><td>-0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">La madre del menor</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No hay menores en casa</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No hay niños</td><td>8.50%</td><td>2.30%</td><td>6.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Otro miembro del hogar</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Todos los miembros del hogar</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <!-- H14 -->
+        <tr style="font-weight:600"><td>H14</td><td>Proporción de la existencia de grupo comunitario voluntario en el pueblo</td><td>43.80%</td><td>34.30%</td><td>9.5%</td><td>0.0018*</td><td>Prueba de diferencia de proporciones</td></tr>
+        <!-- H20 -->
+        <tr style="font-weight:600"><td rowspan="4">H20</td><td rowspan="4">Frecuencia de la existencia de grupo comunitario de limpieza</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0016*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No (pase a la sección I)</td><td>95.60%</td><td>89.30%</td><td>6.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No lo sé (pase a la sección I)</td><td>3.50%</td><td>2.80%</td><td>0.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Sí</td><td>0.90%</td><td>7.90%</td><td>-7.0%</td><td></td><td></td></tr>
+        <!-- H5 -->
+        <tr style="font-weight:600"><td>H5</td><td>Proporción de participación en programa de capacitación en salud</td><td>10.30%</td><td>2.50%</td><td>7.8%</td><td>0.0000*</td><td>Prueba de diferencia de proporciones</td></tr>
+        <!-- Grupo A -->
+        <tr style="font-weight:600"><td rowspan="14">Grupo A: Agua potable</td><td rowspan="14">Frecuencia de agua potable</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua de lluvia, compra agua</td><td>0.00%</td><td>0.40%</td><td>-0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua entubada dentro de la vivienda/patio/terreno (red pública)</td><td>69.20%</td><td>87.80%</td><td>-18.6%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua hervida</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua tratada comprada</td><td>23.60%</td><td>0.00%</td><td>23.6%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Compra agua</td><td>0.20%</td><td>2.70%</td><td>-2.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Compra agua de cisterna</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Compra de agua, agua de lluvia</td><td>0.00%</td><td>0.40%</td><td>-0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Manantial protegido</td><td>0.00%</td><td>0.20%</td><td>-0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Pilón público / Grifo público</td><td>3.90%</td><td>3.10%</td><td>0.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Pozo excavado protegido</td><td>1.10%</td><td>0.70%</td><td>0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Pozo tubular / Perforación</td><td>1.50%</td><td>4.20%</td><td>-2.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Cisterna</td><td>0.00%</td><td>0.20%</td><td>-0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Timbo</td><td>0.00%</td><td>0.20%</td><td>-0.2%</td><td></td><td></td></tr>
+        <!-- Grupo B -->
+        <tr style="font-weight:600"><td rowspan="11">Grupo B: Agua necesariamente potable</td><td rowspan="11">Frecuencia de agua necesariamente potable</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua de lluvia</td><td>0.00%</td><td>1.50%</td><td>-1.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua embotellada (verifique la fuente principal para otros usos del hogar)</td><td>57.90%</td><td>50.80%</td><td>7.1%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua en galones</td><td>0.00%</td><td>1.50%</td><td>-1.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua lluvia</td><td>1.80%</td><td>12.30%</td><td>-10.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Agua superficial (ej. río, represa, lago/cocha, estanque)</td><td>3.50%</td><td>24.60%</td><td>-21.1%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Camión cisterna</td><td>7.00%</td><td>1.50%</td><td>5.5%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Compran agua</td><td>0.00%</td><td>6.20%</td><td>-6.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Manantial no protegido</td><td>1.80%</td><td>0.00%</td><td>1.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Pozo excavado no protegido</td><td>26.30%</td><td>0.00%</td><td>26.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Pozo excavado protegido</td><td>1.80%</td><td>1.50%</td><td>0.3%</td><td></td><td></td></tr>
+        <!-- I4 -->
+        <tr style="font-weight:600"><td>I4</td><td>Promedio de tiempo para ir a fuente de agua ida y vuelta (min)</td><td>11.86</td><td>20.72</td><td>-8.86</td><td>0.0000*</td><td>Kolmogórov-Smirnov para 2 muestras independientes</td></tr>
+        <!-- I8 -->
+        <tr style="font-weight:600"><td rowspan="13">I8</td><td rowspan="13">Frecuencia de lugar donde defecan</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0224*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Al aire libre (tierra, monte o río)</td><td>2.50%</td><td>1.70%</td><td>0.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Baño a tajo abierto</td><td>0.00%</td><td>0.20%</td><td>-0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Baño conectado a pozo séptico</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Baño o letrina (conectado a desagüe)</td><td>85.50%</td><td>78.30%</td><td>7.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Baño o letrina (conectado a desagüe), Al aire libre (tierra, monte o río)</td><td>0.40%</td><td>0.20%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Baño o letrina (conectado a desagüe), Desagüe no conectado a la red pública</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Baño seco</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Desagüe conectado a pozo ciego</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Letrina / silo</td><td>10.10%</td><td>18.40%</td><td>-8.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Letrina / silo, Al aire libre (tierra, monte o río)</td><td>0.40%</td><td>0.20%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Letrina / silo, Baño o letrina (conectado a desagüe)</td><td>0.40%</td><td>0.80%</td><td>-0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Pozo séptico</td><td>0.00%</td><td>0.20%</td><td>-0.2%</td><td></td><td></td></tr>
+        <!-- I9 -->
+        <tr style="font-weight:600"><td rowspan="6">I9</td><td rowspan="6">Frecuencia de lugar donde se lavan las manos</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0004*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Instalación fija observada (lavadero/caño) en el patio/terreno</td><td>4.30%</td><td>10.30%</td><td>-6.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Instalación fija observada (lavadero/caño) en la vivienda</td><td>78.90%</td><td>69.80%</td><td>9.1%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No hay lugar para lavarse las manos en la vivienda</td><td>4.70%</td><td>4.30%</td><td>0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Objeto móvil observado (balde/jarra/tetera)</td><td>12.20%</td><td>15.10%</td><td>-2.9%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Sin permiso para ver</td><td>0.00%</td><td>0.60%</td><td>-0.6%</td><td></td><td></td></tr>
+        <!-- M8 -->
+        <tr style="font-weight:600"><td rowspan="14">M8</td><td rowspan="14">Frecuencia del tipo de protección contra picadura de zancudo</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0062*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Con la frazada</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Dormimos cubiertos con el mosquitero</td><td>40.90%</td><td>46.30%</td><td>-5.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Fumigamos la casa con insecticida o usamos el abate</td><td>9.70%</td><td>7.40%</td><td>2.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Insecticida espiral</td><td>0.40%</td><td>1.20%</td><td>-0.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Mantenemos el ambiente de la casa limpio</td><td>25.00%</td><td>26.00%</td><td>-1.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Nada</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No nos quedamos fuera de la casa por la noche o desde la hora que hay zancudos</td><td>0.20%</td><td>0.60%</td><td>-0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">No sé</td><td>4.30%</td><td>0.60%</td><td>3.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Rellenamos los charcos de agua estancada o eliminamos los objetos inservibles con agua estancada</td><td>0.40%</td><td>0.80%</td><td>-0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Usamos espiral</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Usamos repelentes</td><td>18.00%</td><td>17.20%</td><td>0.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Usan malla metálica</td><td>0.20%</td><td>0.00%</td><td>0.2%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Uso medicinas que me protegen de la malaria</td><td>0.40%</td><td>0.00%</td><td>0.4%</td><td></td><td></td></tr>
+        <!-- M9.1 -->
+        <tr style="font-weight:600"><td rowspan="6">M9.1</td><td rowspan="6">Frecuencia del grado de importancia de ir a posta con síntomas de malaria</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Bastante (significativamente)</td><td>46.70%</td><td>59.50%</td><td>-12.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Extremadamente</td><td>3.30%</td><td>8.30%</td><td>-5.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Moderadamente</td><td>43.00%</td><td>22.90%</td><td>20.1%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Para nada</td><td>0.80%</td><td>1.60%</td><td>-0.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Un poco (ligeramente)</td><td>6.20%</td><td>7.80%</td><td>-1.6%</td><td></td><td></td></tr>
+        <!-- M9.2 -->
+        <tr style="font-weight:600"><td rowspan="6">M9.2</td><td rowspan="6">Frecuencia del grado de importancia de tomar medicina para malaria rápido</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Bastante (significativamente)</td><td>53.30%</td><td>64.00%</td><td>-10.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Extremadamente</td><td>3.50%</td><td>12.80%</td><td>-9.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Moderadamente</td><td>38.80%</td><td>18.00%</td><td>20.8%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Para nada</td><td>0.40%</td><td>1.40%</td><td>-1.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Un poco (ligeramente)</td><td>4.10%</td><td>3.90%</td><td>0.2%</td><td></td><td></td></tr>
+        <!-- M9.3 -->
+        <tr style="font-weight:600"><td rowspan="6">M9.3</td><td rowspan="6">Frecuencia del grado de importancia de fumigar para prevenir malaria/dengue</td><td>Frecuencia</td><td>Frecuencia</td><td></td><td>0.0000*</td><td>Prueba Chi-cuadrado de homogeneidad</td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Bastante (significativamente)</td><td>54.70%</td><td>68.40%</td><td>-13.7%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Extremadamente</td><td>8.10%</td><td>8.50%</td><td>-0.4%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Moderadamente</td><td>34.70%</td><td>18.40%</td><td>16.3%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Para nada</td><td>0.20%</td><td>1.20%</td><td>-1.0%</td><td></td><td></td></tr>
+        <tr><td style="font-style:italic;padding-left:1.2em">Un poco (ligeramente)</td><td>2.30%</td><td>3.50%</td><td>-1.2%</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="ins-a ins"><p>* Diferencia estadísticamente significativa (p &lt; 0.05). Solo se incluyen indicadores significativos. pp = puntos porcentuales. K-S = Kolmogórov-Smirnov para 2 muestras independientes. Prueba de diferencia de proporciones (Z). Chi² = prueba de homogeneidad. Los indicadores sin diferencia estadísticamente significativa (A6, F14, F7.1, H15, H16, H17, H18, H19, I5, I10, M3, M7) no se incluyen en esta tabla.</p></div>
+  </div>
+</div>
+
+
+<!-- ═══════════ SEMÁFORO DE BRECHAS ═══════════ -->
+<div id="s-semaforo" class="sec">
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct">Semáforo de brechas: control vs intervención</div>
+    <div class="cs">Verde = intervención mejor · Rojo = control mejor · Gris = sin diferencia significativa · Ordenar por magnitud de brecha</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <button onclick="sortSemaforo('brecha')" style="font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--brd);background:var(--card);cursor:pointer;color:var(--n2);font-family:inherit">Ordenar por brecha ↓</button>
+      <button onclick="sortSemaforo('nombre')" style="font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--brd);background:var(--card);cursor:pointer;color:var(--n2);font-family:inherit">Ordenar alfabético</button>
+      <button onclick="filterSemaforo('pos')" style="font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--brd);background:var(--card);cursor:pointer;color:var(--n2);font-family:inherit">Solo ventajas intervención</button>
+      <button onclick="filterSemaforo('neg')" style="font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--brd);background:var(--card);cursor:pointer;color:var(--n2);font-family:inherit">Solo desventajas intervención</button>
+      <button onclick="filterSemaforo('all')" style="font-size:11px;padding:4px 10px;border-radius:20px;border:0.5px solid var(--brd);background:var(--card);cursor:pointer;color:var(--n2);font-family:inherit">Mostrar todos</button>
+    </div>
+    <div style="overflow-x:auto"><table class="tbl" id="tbl-semaforo">
+      <thead><tr><th>Indicador</th><th>Tema</th><th>Control</th><th>Intervención</th><th>Brecha</th><th>Dirección</th></tr></thead>
+      <tbody id="tbody-semaforo"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════ COMPARADOR DE DISTRITOS ═══════════ -->
+<div id="s-comparador" class="sec">
+  <div class="card">
+    <div class="ct">Comparador de distritos</div>
+    <div class="cs">Selecciona dos distritos para ver sus indicadores lado a lado</div>
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+      <div>
+        <div style="font-size:10px;color:var(--n3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Distrito A</div>
+        <select id="cmp-a" onchange="renderComparador()" style="font-size:12px;padding:5px 8px;border-radius:6px;border:0.5px solid var(--brd);background:var(--card);color:var(--n);font-family:inherit">
+          <option value="0">Belén (Control)</option>
+          <option value="1">Yurimaguas (Control)</option>
+          <option value="2" selected>Punchana (Intervención)</option>
+          <option value="3">San Juan Bautista (Intervención)</option>
+        </select>
+      </div>
+      <div style="font-size:18px;color:var(--n3);padding-top:16px">vs</div>
+      <div>
+        <div style="font-size:10px;color:var(--n3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px">Distrito B</div>
+        <select id="cmp-b" onchange="renderComparador()" style="font-size:12px;padding:5px 8px;border-radius:6px;border:0.5px solid var(--brd);background:var(--card);color:var(--n);font-family:inherit">
+          <option value="0">Belén (Control)</option>
+          <option value="1" selected>Yurimaguas (Control)</option>
+          <option value="2">Punchana (Intervención)</option>
+          <option value="3">San Juan Bautista (Intervención)</option>
+        </select>
+      </div>
+    </div>
+    <div id="cmp-result" style="overflow-x:auto"></div>
+  </div>
+</div>
+
+<!-- ═══════════ RADAR POR DIMENSIONES ═══════════ -->
+<div id="s-radar" class="sec">
+  <div class="card">
+    <div class="ct">Perfil multidimensional: control vs intervención</div>
+    <div class="cs">Radar de 6 dimensiones temáticas – escala 0–100 (promedio de indicadores normalizados por dimensión)</div>
+    <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Grupo control (Belén + Yurimaguas)</span><span class="li"><span class="ld" style="background:#D85A30"></span>Grupo intervención (Punchana + SJB)</span></div>
+    <div class="cw" style="height:380px"><canvas id="c-radar" role="img" aria-label="Radar multidimensional control vs intervención">Comparación de 6 dimensiones entre grupos.</canvas></div>
+    <div class="ins-a ins" style="margin-top:12px"><p>Interpretación: valores más altos indican mejor posición relativa en esa dimensión. La dimensión Salud mide comportamientos preventivos; Clima mide conciencia del riesgo climático; Comunidad mide participación y organización comunitaria.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════ EMBUDO DE ATENCIÓN ═══════════ -->
+<div id="s-funnel" class="sec">
+  <div class="card">
+    <div class="ct">Embudo de atención ante síntomas de malaria/dengue</div>
+    <div class="cs">¿Cuántos hogares completan cada etapa del proceso de atención? Selecciona el distrito.</div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="fnb on" onclick="setFunnel(0,this)">Belén</button>
+      <button class="fnb" onclick="setFunnel(1,this)">Yurimaguas</button>
+      <button class="fnb" onclick="setFunnel(2,this)">Punchana</button>
+      <button class="fnb" onclick="setFunnel(3,this)">San Juan Bautista</button>
+      <button class="fnb" onclick="setFunnel(4,this)">Todos (promedio)</button>
+    </div>
+    <div id="funnel-viz" style="padding:8px 0"></div>
+  </div>
+</div>
+
+<!-- ═══════════ HEATMAP PREVENTIVO ═══════════ -->
+<div id="s-heatmap" class="sec">
+  <div class="card">
+    <div class="ct">Mapa de calor: comportamientos preventivos por distrito</div>
+    <div class="cs">Mayor intensidad = mayor adopción del comportamiento. Verde &gt;70% · Amarillo 40–70% · Rojo &lt;40%</div>
+    <div id="heatmap-viz" style="overflow-x:auto;margin-top:8px"></div>
+    <div class="ins" style="margin-top:10px"><p>San Juan Bautista destaca en consulta inmediata (90.3%) y disposición a hacerse prueba (98.5%), pero es el distrito con menor cobertura de fumigación reciente (1.2% en los últimos 3 meses). Yurimaguas muestra el patrón opuesto: alta aceptación de fumigación pero baja consulta inmediata.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════ LIKERT CLIMA ═══════════ -->
+<div id="s-likert" class="sec">
+  <div class="card">
+    <div class="ct">Percepciones sobre cambio climático – escala de respuesta completa</div>
+    <div class="cs">Barras divergentes centradas en "moderadamente". Izquierda = escéptico · Derecha = muy preocupado</div>
+    <div class="leg" style="margin-bottom:12px">
+      <span class="li"><span class="ld" style="background:#D85A30"></span>Nada</span>
+      <span class="li"><span class="ld" style="background:#BA7517"></span>Poco</span>
+      <span class="li"><span class="ld" style="background:#888780"></span>Moderadamente</span>
+      <span class="li"><span class="ld" style="background:#378ADD"></span>Bastante</span>
+      <span class="li"><span class="ld" style="background:#1D9E75"></span>Extremadamente</span>
+    </div>
+    <div id="likert-viz"></div>
+  </div>
+</div>
+
+<!-- ═══════════ BUSCADOR DE INDICADORES ═══════════ -->
+<div id="s-buscador" class="sec">
+  <div class="card">
+    <div class="ct">Buscador de indicadores clave</div>
+    <div class="cs">Escribe para filtrar los 43 indicadores y ver sus valores por distrito</div>
+    <input id="ind-search" type="text" placeholder="Ej: mosquitero, agua, fumig, gasto…" oninput="filterIndicadores()" style="width:100%;font-size:13px;padding:8px 12px;border-radius:8px;border:0.5px solid var(--brd);background:var(--card);color:var(--n);margin-bottom:14px;font-family:inherit">
+    <div id="ind-result"></div>
+  </div>
+</div>
+
+</div><!-- end wrap -->
+
+<script>
+const D=['Belén','Yurimaguas','Punchana','San Juan B.'];
+const C=['#378ADD','#534AB7','#1D9E75','#D85A30'];
+function g(id){return document.getElementById(id)}
+function mc(id,type,labels,datasets,opts){
+  const el=g(id);if(!el)return;
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#888780',font:{size:10}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888780',font:{size:10}}}}};
+  new Chart(el,{type,data:{labels,datasets},options:{...base,...opts}});
+}
+function show(name,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  g('s-'+name).classList.add('on');
+  btn.classList.add('on');
+  // lazy init charts on first view
+  if(!window._init) window._init={};
+  if(!window._init[name]){window._init[name]=true;initCharts(name);}
+}
+function initCharts(name){
+  const so={scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#888780',font:{size:10}}},y:{stacked:true,grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888780',font:{size:10}}}}};
+  if(name==='resumen'){
+    mc('c-muestra','bar',D,[{data:[236,227,242,241],backgroundColor:'#378ADD'},{data:[22,31,15,18],backgroundColor:'#BA7517'}],{...so,plugins:{legend:{display:false}}});
+    mc('c-epi-resumen','bar',D,[{label:'Malaria',data:[0.25,0.04,0.65,1.08],backgroundColor:'#D85A30'},{label:'Dengue',data:[0.71,1.36,0.53,0.50],backgroundColor:'#378ADD'}],{});
+  }
+  if(name==='epidemio'){
+    mc('c-malaria','bar',D,[{label:'2025',data:[0.25,0.04,0.65,1.08],backgroundColor:C},{label:'2026*',data:[0.03,0.00,0.04,0.11],backgroundColor:C.map(c=>c+'88')}],{});
+    mc('c-dengue','bar',D,[{label:'2025',data:[0.71,1.36,0.53,0.50],backgroundColor:C},{label:'2026*',data:[0.17,0.50,0.06,0.16],backgroundColor:C.map(c=>c+'88')}],{});
+    mc('c-diag','bar',['Malaria','Dengue','Ninguno'],[{label:'Belén',data:[2.4,2.4,95.2],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[2.4,29.3,65.9],backgroundColor:'#534AB7'},{label:'Punchana',data:[0,0,100],backgroundColor:'#1D9E75'},{label:'SJB',data:[20,20,60],backgroundColor:'#D85A30'}],{});
+  }
+  if(name==='demo'){
+    mc('c-resid','bar',D,[{label:'Media',data:[25.4,27.2,19.1,12.7],backgroundColor:C},{label:'Mediana',data:[25,29.5,15,8],backgroundColor:C.map(c=>c+'88')}],{});
+    mc('c-hogar','bar',D,[{label:'Hombres',data:[2.2,2.0,2.1,2.1],backgroundColor:'#378ADD'},{label:'Mujeres',data:[2.3,2.2,2.1,2.2],backgroundColor:'#D85A30'},{label:'Niños ≤17',data:[1.0,1.1,1.1,1.3],backgroundColor:'#1D9E75'},{label:'Adultos may.',data:[0.5,1.1,0.5,0.5],backgroundColor:'#BA7517'}],{});
+    mc('c-sexo','bar',D,[{label:'Masculino',data:[71.7,72.1,83.3,77.2],backgroundColor:C},{label:'Femenino',data:[28.3,27.9,16.7,22.8],backgroundColor:C.map(c=>c+'88')}],{...so,scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#888780',font:{size:10}}},y:{stacked:true,max:100,grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888780',font:{size:10}}}}});
+  }
+  if(name==='socio'){
+    mc('c-educ','bar',D,[{label:'Superior completa',data:[26.7,19,33.5,6.9],backgroundColor:'#378ADD'},{label:'Sup. técnico',data:[17.1,8.9,14,9.7],backgroundColor:'#1D9E75'},{label:'Secundaria completa',data:[32.9,32.6,30.7,54.8],backgroundColor:'#BA7517'},{label:'Primaria/sin educ.',data:[6.7,25.3,7.5,15],backgroundColor:'#D85A30'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+    mc('c-ingreso','bar',D,[{label:'Empleo asalariado',data:[43.4,32.7,47.9,25.9],backgroundColor:'#378ADD'},{label:'Act. no agrícolas',data:[46.1,38.1,45.5,33.6],backgroundColor:'#1D9E75'},{label:'Agricultura/pesca',data:[4.3,14.5,3.1,16.1],backgroundColor:'#BA7517'},{label:'Otros',data:[6.2,14.7,3.5,24.4],backgroundColor:'#888780'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:115}}});
+    mc('c-alimentos','bar',D,[{data:[600,500,400,900],backgroundColor:C}],{});
+    mc('c-suficiencia','bar',D,[{label:'Ahorra bien',data:[11.2,13.6,17.9,7.3],backgroundColor:'#1D9E75'},{label:'Ahorra un poco',data:[24.0,22.9,20.6,21.6],backgroundColor:'#378ADD'},{label:'Solo cubre gastos',data:[57.8,40.7,56.4,59.8],backgroundColor:'#BA7517'},{label:'Usa ahorros',data:[6.2,13.6,4.7,10.4],backgroundColor:'#D85A30'},{label:'Pide prestado',data:[0.8,9.3,0.4,0.8],backgroundColor:'#E24B4A'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+  }
+  if(name==='vivienda'){
+    mc('c-pared','bar',D,[{label:'Ladrillo/cemento',data:[70.5,87.2,71.6,68.3],backgroundColor:'#378ADD'},{label:'Madera',data:[29.5,11.2,28.0,31.3],backgroundColor:'#D85A30'},{label:'Otro',data:[0,1.6,0.4,0.4],backgroundColor:'#888780'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+    mc('c-piso','bar',D,[{label:'Cemento',data:[52.7,72.9,48.6,75.3],backgroundColor:'#378ADD'},{label:'Loseta/cerámica',data:[24.4,14.7,24.1,8.1],backgroundColor:'#1D9E75'},{label:'Tierra/arena',data:[5.0,11.2,5.4,11.2],backgroundColor:'#D85A30'},{label:'Madera/machimbrado',data:[17.9,1.2,21.8,5.4],backgroundColor:'#888780'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+    mc('c-bienes','bar',['Televisor','Smartphone','Celular','Vehículo','Refrigeradora','Computadora','Radio'],[{label:'Belén',data:[85.7,76.4,98.4,71.7,91.5,35.7,75.2],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[83.3,92.2,58.9,62.4,81.4,43.0,44.6],backgroundColor:'#534AB7'},{label:'Punchana',data:[82.9,83.3,96.9,77.0,89.1,38.9,82.1],backgroundColor:'#1D9E75'},{label:'San Juan B.',data:[91.9,62.5,95.4,55.2,83.4,32.8,73.0],backgroundColor:'#D85A30'}],{});
+  }
+  if(name==='salud'){
+    mc('c-conducta','bar',D,[{label:'Va inmediato al establecimiento',data:[49.2,54.3,55.6,90.3],backgroundColor:'#1D9E75'},{label:'Va a farmacia',data:[26.4,21.7,15.6,5.0],backgroundColor:'#BA7517'},{label:'Trata en casa',data:[24.0,22.5,28.4,4.2],backgroundColor:'#D85A30'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+    mc('c-fumig','bar',D,[{label:'<3 meses',data:[26.7,2.3,35,1.2],backgroundColor:'#1D9E75'},{label:'3-5 meses',data:[16.7,9.7,14,3.1],backgroundColor:'#378ADD'},{label:'6-11 meses',data:[15.1,14,5.8,13.9],backgroundColor:'#BA7517'},{label:'≥1 año/nunca',data:[41.5,73.4,44.5,82.5],backgroundColor:'#D85A30'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+    mc('c-importancia','bar',['Consulta oportuna','Tomar medicina rápido','Fumigar/limpiar'],[{label:'Belén',data:[62.4,73.7,74.5],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[37.6,39.9,51.1],backgroundColor:'#534AB7'},{label:'Punchana',data:[41.7,59.9,62.2],backgroundColor:'#1D9E75'},{label:'SJB',data:[93.8,93.5,91.5],backgroundColor:'#D85A30'}],{});
+    mc('c-pruebas','bar',['Sí encontró prueba','No encontró prueba','Nunca fue'],[{label:'Belén',data:[27.5,15.8,56.7],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[13.7,9.6,76.7],backgroundColor:'#534AB7'},{label:'Punchana',data:[10.7,4.1,85.3],backgroundColor:'#1D9E75'},{label:'SJB',data:[60.4,26.3,13.3],backgroundColor:'#D85A30'}],{});
+    mc('c-protec','bar',['Mosquitero','Repelentes','Ambiente limpio','Fumigación'],[{label:'Belén',data:[43.4,19.8,17.8,10.5],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[38.4,16.3,32.2,8.9],backgroundColor:'#534AB7'},{label:'Punchana',data:[45.1,12.8,31.1,8.6],backgroundColor:'#1D9E75'},{label:'SJB',data:[47.5,21.6,20.8,6.2],backgroundColor:'#D85A30'}],{});
+  }
+  if(name==='clima'){
+    mc('c-cc-conoc','bar',D,[{label:'Nada',data:[17.1,19.8,16,47.5],backgroundColor:'#888780'},{label:'Poco',data:[44.6,41.9,54.5,28.2],backgroundColor:'#BA7517'},{label:'Moderado',data:[29.1,25.2,24.5,5.8],backgroundColor:'#378ADD'},{label:'Bastante/mucho',data:[9.3,13.2,5.1,18.6],backgroundColor:'#1D9E75'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+    mc('c-cc-perc','bar',['Brotes mal/den','Prevalencia zanc.','Lluvias→zanc.','Sequía ríos','Olas de calor'],[{label:'Belén',data:[58.9,59.7,54.3,39.1,64.8],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[31.4,28.3,31.4,30.6,58.2],backgroundColor:'#534AB7'},{label:'Punchana',data:[63.8,63,39.7,55.3,73.6],backgroundColor:'#1D9E75'},{label:'SJB',data:[78.8,84.9,78.8,84.5,89.2],backgroundColor:'#D85A30'}],{});
+  }
+  if(name==='comunidad'){
+    mc('c-info','bar',D,[{label:'Anuncios TV',data:[50,34.1,49.8,19.7],backgroundColor:'#378ADD'},{label:'Promotores salud',data:[16.3,28.3,13.2,23.9],backgroundColor:'#1D9E75'},{label:'Radio',data:[12.4,13.6,16.3,12],backgroundColor:'#BA7517'},{label:'Nada',data:[4.7,18.2,1.9,28.6],backgroundColor:'#D85A30'},{label:'Redes sociales',data:[3.5,2.7,5.1,8.1],backgroundColor:'#888780'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:120}}});
+  }
+  if(name==='agua'){
+    mc('c-agua','bar',D,[{label:'Mediana',data:[3,24,2,6],backgroundColor:C},{label:'Media',data:[4.5,23.7,4.1,8.6],backgroundColor:C.map(c=>c+'88')}],{});
+    mc('c-agua2','bar',D,[{label:'Hierven',data:[55,18.2,58.4,20.8],backgroundColor:'#378ADD'},{label:'Agua tratada comprada',data:[0,44.6,0,0],backgroundColor:'#1D9E75'},{label:'Grifo/pilón',data:[29.8,20.5,33.1,46.7],backgroundColor:'#BA7517'},{label:'Sin tratamiento',data:[10.9,2.7,7,5],backgroundColor:'#D85A30'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
+  }
+  if(name==='genero'){
+    mc('c-decision','bar',['Decisiones salud','Decisiones ingresos','Gastos menores','Salud niños'],[{label:'Belén',data:[36.8,32.2,34.1,30.6],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[32.2,27.9,30.2,36.8],backgroundColor:'#534AB7'},{label:'Punchana',data:[50.6,51.0,51.4,47.9],backgroundColor:'#1D9E75'},{label:'SJB',data:[47.1,43.2,47.5,34.4],backgroundColor:'#D85A30'}],{});
+    mc('c-bienestar','bar',['Alimentos','Vivienda','Atención salud'],[{label:'Belén',data:[28.7,29.1,31.4],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[48.1,48.4,48.4],backgroundColor:'#534AB7'},{label:'Punchana',data:[34.2,34.2,35.4],backgroundColor:'#1D9E75'},{label:'SJB',data:[12.4,21.6,16.6],backgroundColor:'#D85A30'}],{});
+    mc('c-ingresos2','bar',D,[{label:'Genera ahorros',data:[11.2,13.6,17.9,7.3],backgroundColor:'#1D9E75'},{label:'Ahorra un poco',data:[24,22.9,20.6,21.6],backgroundColor:'#378ADD'},{label:'Solo cubre gastos',data:[57.8,40.7,56.4,59.8],backgroundColor:'#BA7517'},{label:'Usa ahorros',data:[6.2,13.6,4.7,10.4],backgroundColor:'#D85A30'},{label:'Pide prestado',data:[0.8,9.3,0.4,0.8],backgroundColor:'#E24B4A'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:115}}});
+  }
+}
+
+// ══════════════════════════════════════════
+// DATA FOR NEW VISUALIZATIONS
+// ══════════════════════════════════════════
+const DIST = ['Belén','Yurimaguas','Punchana','San Juan B.'];
+const GRP  = ['Control','Control','Intervención','Intervención'];
+const COL  = ['#378ADD','#534AB7','#1D9E75','#D85A30'];
+
+// 43 indicators dataset
+const IND43 = [
+  {id:'A1',  tema:'Demografía',    nom:'Años de residencia (media)',                 v:[25.4,27.2,19.1,12.7], tipo:'num', mejor:'alto'},
+  {id:'B2',  tema:'Socioeconómico',nom:'Educación superior completa (%)',             v:[26.7,19.0,33.5,6.9],  tipo:'pct', mejor:'alto'},
+  {id:'B8',  tema:'Socioeconómico',nom:'Empleo asalariado (%)',                       v:[43.4,32.7,47.9,25.9], tipo:'pct', mejor:'alto'},
+  {id:'B10', tema:'Socioeconómico',nom:'Gasto semanal medio (S/)',                    v:[265,270,259,405],      tipo:'num', mejor:'alto'},
+  {id:'B17', tema:'Socioeconómico',nom:'Alimentos comprados último mes (%)',          v:[86.8,95.7,76.3,73.0], tipo:'pct', mejor:'alto'},
+  {id:'B12', tema:'Acceso',        nom:'Tiempo viaje escuela (min, media)',           v:[8.3,6.7,10.0,10.9],   tipo:'num', mejor:'bajo'},
+  {id:'B13', tema:'Acceso',        nom:'Tiempo viaje posta (min, media)',             v:[9.7,8.4,11.2,14.8],   tipo:'num', mejor:'bajo'},
+  {id:'C2',  tema:'Vivienda',      nom:'Electricidad en pueblo (%)',                  v:[99.2,99.6,99.2,96.9], tipo:'pct', mejor:'alto'},
+  {id:'C3',  tema:'Vivienda',      nom:'Conexión red eléctrica pública (%)',          v:[98.8,99.6,97.7,96.9], tipo:'pct', mejor:'alto'},
+  {id:'C7',  tema:'Vivienda',      nom:'Paredes material noble (%)',                  v:[70.5,87.2,71.6,68.3], tipo:'pct', mejor:'alto'},
+  {id:'C9',  tema:'Vivienda',      nom:'Piso cemento/cerámica (%)',                   v:[77.1,87.6,72.7,83.4], tipo:'pct', mejor:'alto'},
+  {id:'C10.1',tema:'Vivienda',     nom:'Tiene celular (%)',                           v:[98.4,58.9,96.9,95.4], tipo:'pct', mejor:'alto'},
+  {id:'C10.2',tema:'Vivienda',     nom:'Tiene smartphone (%)',                        v:[76.4,92.2,83.3,62.5], tipo:'pct', mejor:'alto'},
+  {id:'C10.7',tema:'Vivienda',     nom:'Tiene refrigeradora (%)',                     v:[91.5,81.4,89.1,83.4], tipo:'pct', mejor:'alto'},
+  {id:'I1',  tema:'Agua/Saneam.', nom:'Agua entubada en casa (%)',                   v:[69.2,69.2,87.8,87.8], tipo:'pct', mejor:'alto'},
+  {id:'I1b', tema:'Agua/Saneam.', nom:'Agua superficial - riesgo (%)',               v:[3.5,3.5,24.6,24.6],   tipo:'pct', mejor:'bajo'},
+  {id:'I8',  tema:'Agua/Saneam.', nom:'Acceso a desagüe (%)',                        v:[85.5,85.5,78.3,78.3], tipo:'pct', mejor:'alto'},
+  {id:'I9',  tema:'Agua/Saneam.', nom:'Lavado manos: instalación fija (%)',          v:[78.9,78.9,69.8,69.8], tipo:'pct', mejor:'alto'},
+  {id:'F1',  tema:'Salud',        nom:'Consulta inmediata ante fiebre (%)',           v:[49.2,54.3,55.6,90.3], tipo:'pct', mejor:'alto'},
+  {id:'F17', tema:'Salud',        nom:'Considera necesario hacerse prueba (%)',       v:[66.3,89.9,83.3,98.5], tipo:'pct', mejor:'alto'},
+  {id:'F4',  tema:'Salud',        nom:'Hospitalización últimos 12 meses (%)',         v:[20.5,16.9,22.8,26.6], tipo:'pct', mejor:'bajo'},
+  {id:'F5',  tema:'Salud',        nom:'Enfermedad/lesión últimos 6 meses (%)',        v:[49.6,51.0,52.5,58.3], tipo:'pct', mejor:'bajo'},
+  {id:'B18', tema:'Salud',        nom:'Uso medicamentos/salud último mes (%)',        v:[36.8,36.8,18.0,18.0], tipo:'pct', mejor:'bajo'},
+  {id:'M2',  tema:'Salud',        nom:'Considera necesario fumigar (%)',              v:[94.2,98.4,95.0,95.4], tipo:'pct', mejor:'alto'},
+  {id:'M3',  tema:'Salud',        nom:'Aceptó fumigación/abate (%)',                 v:[84.1,88.0,91.8,82.5], tipo:'pct', mejor:'alto'},
+  {id:'M8',  tema:'Salud',        nom:'Usa mosquitero (%)',                           v:[43.4,38.4,45.1,47.5], tipo:'pct', mejor:'alto'},
+  {id:'M9.1',tema:'Salud',        nom:'Importancia consulta oportuna (%)',            v:[62.4,37.6,41.7,93.8], tipo:'pct', mejor:'alto'},
+  {id:'M9.2',tema:'Salud',        nom:'Importancia tomar medicina rápido (%)',        v:[73.7,39.9,59.9,93.5], tipo:'pct', mejor:'alto'},
+  {id:'M9.3',tema:'Salud',        nom:'Importancia fumigar/ambiente limpio (%)',      v:[74.5,51.1,62.2,91.5], tipo:'pct', mejor:'alto'},
+  {id:'D2',  tema:'Clima',        nom:'Conoce cambio climático (%)',                  v:[82.9,80.2,84.0,52.5], tipo:'pct', mejor:'alto'},
+  {id:'D3',  tema:'Clima',        nom:'Lluvias favorecen zancudos (%)',              v:[54.3,31.4,39.7,78.8], tipo:'pct', mejor:'alto'},
+  {id:'D4',  tema:'Clima',        nom:'CC afecta brote malaria/dengue (%)',          v:[58.9,31.4,63.8,78.8], tipo:'pct', mejor:'alto'},
+  {id:'D7',  tema:'Clima',        nom:'CC aumentará zancudos (bastante/extremo)',    v:[59.7,28.3,63.0,84.9], tipo:'pct', mejor:'alto'},
+  {id:'H4',  tema:'Comunidad',    nom:'Participa actividades prev. comunidad (%)',    v:[61.2,46.9,53.5,29.7], tipo:'pct', mejor:'alto'},
+  {id:'H5',  tema:'Comunidad',    nom:'Participó capacitación salud último año (%)', v:[10.3,10.3,2.5,2.5],   tipo:'pct', mejor:'alto'},
+  {id:'H14', tema:'Comunidad',    nom:'Grupos comunitarios voluntarios (%)',          v:[43.8,43.8,34.3,34.3], tipo:'pct', mejor:'alto'},
+  {id:'H20', tema:'Comunidad',    nom:'Grupos comunitarios de limpieza (%)',          v:[0.9,0.9,7.9,7.9],     tipo:'pct', mejor:'alto'},
+  {id:'G1',  tema:'Género',       nom:'Decisiones salud – ambos juntos (%)',          v:[36.8,32.2,50.6,47.1], tipo:'pct', mejor:'alto'},
+  {id:'G2',  tema:'Género',       nom:'Decisiones ingresos – conjuntamente (%)',      v:[32.2,27.9,51.0,43.2], tipo:'pct', mejor:'alto'},
+  {id:'G3',  tema:'Género',       nom:'Decisiones gastos menores – ambos (%)',        v:[34.1,30.2,51.4,47.5], tipo:'pct', mejor:'alto'},
+  {id:'E1',  tema:'Bienestar',    nom:'Suficiencia alimentaria (alcanza bien) (%)',  v:[28.7,48.1,34.2,12.4], tipo:'pct', mejor:'alto'},
+  {id:'E2',  tema:'Bienestar',    nom:'Suficiencia vivienda (alcanza bien) (%)',     v:[29.1,48.4,34.2,21.6], tipo:'pct', mejor:'alto'},
+  {id:'E3',  tema:'Bienestar',    nom:'Suficiencia atención salud (alcanza bien)',   v:[31.4,48.4,35.4,16.6], tipo:'pct', mejor:'alto'},
+];
+
+// Compute control (avg 0+1) and intervention (avg 2+3) for each indicator
+function ctrlVal(ind){ return (ind.v[0]+ind.v[1])/2; }
+function intvVal(ind){ return (ind.v[2]+ind.v[3])/2; }
+function brecha(ind){ return intvVal(ind)-ctrlVal(ind); }
+function brechaAbs(ind){ return Math.abs(brecha(ind)); }
+
+// ══════════════════════════════════════════
+// SEMÁFORO
+// ══════════════════════════════════════════
+let sfData = IND43.map(d=>({...d}));
+let sfFilter = 'all';
+let sfSort = 'brecha';
+
+function colorSemaforo(ind){
+  const b = brecha(ind);
+  const sig = brechaAbs(ind) > 3;
+  if(!sig) return {bg:'#F1EFE8',tx:'#5f5e5a',icon:'—'};
+  const pos = (ind.mejor==='alto' && b>0)||(ind.mejor==='bajo' && b<0);
+  if(pos) return {bg:'#E1F5EE',tx:'#085041',icon:'▲'};
+  return {bg:'#FCEBEB',tx:'#791F1F',icon:'▼'};
+}
+
+function renderSemaforo(){
+  let data = [...sfData];
+  if(sfFilter==='pos') data = data.filter(d=>{ const c=colorSemaforo(d); return c.icon==='▲'; });
+  if(sfFilter==='neg') data = data.filter(d=>{ const c=colorSemaforo(d); return c.icon==='▼'; });
+  if(sfSort==='brecha') data.sort((a,b)=>brechaAbs(b)-brechaAbs(a));
+  if(sfSort==='nombre') data.sort((a,b)=>a.nom.localeCompare(b.nom));
+  const tbody = document.getElementById('tbody-semaforo');
+  if(!tbody) return;
+  tbody.innerHTML = data.map(ind=>{
+    const cv = ctrlVal(ind), iv = intvVal(ind), b = brecha(ind);
+    const c = colorSemaforo(ind);
+    const fmt = v => ind.tipo==='pct' ? v.toFixed(1)+'%' : v.toFixed(1);
+    return `<tr>
+      <td style="font-weight:500">${ind.nom}</td>
+      <td><span class="pill pb">${ind.tema}</span></td>
+      <td>${fmt(cv)}</td>
+      <td>${fmt(iv)}</td>
+      <td style="font-weight:500;color:${b>=0?'#0F6E56':'#A32D2D'}">${b>=0?'+':''}${fmt(b)}</td>
+      <td><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;background:${c.bg};color:${c.tx}">${c.icon} ${c.icon==='▲'?'Intervención mejor':c.icon==='▼'?'Control mejor':'Sin diferencia'}</span></td>
+    </tr>`;
+  }).join('');
+}
+function sortSemaforo(s){ sfSort=s; renderSemaforo(); }
+function filterSemaforo(f){ sfFilter=f; renderSemaforo(); }
+
+// ══════════════════════════════════════════
+// COMPARADOR
+// ══════════════════════════════════════════
+function renderComparador(){
+  const a = parseInt(document.getElementById('cmp-a').value);
+  const b = parseInt(document.getElementById('cmp-b').value);
+  const el = document.getElementById('cmp-result');
+  if(!el) return;
+  const rows = IND43.map(ind=>{
+    const va = ind.v[a], vb = ind.v[b];
+    const fmt = v => ind.tipo==='pct' ? v.toFixed(1)+'%' : v.toFixed(1);
+    const aWins = ind.mejor==='alto' ? va>vb : va<vb;
+    const bWins = ind.mejor==='alto' ? vb>va : vb<va;
+    return `<tr>
+      <td style="font-weight:500">${ind.nom}</td>
+      <td><span class="pill pb">${ind.tema}</span></td>
+      <td class="${aWins?'cmp-win':bWins?'cmp-lose':''}">${fmt(va)} ${aWins?'✓':''}</td>
+      <td class="${bWins?'cmp-win':aWins?'cmp-lose':''}">${fmt(vb)} ${bWins?'✓':''}</td>
+    </tr>`;
+  }).join('');
+  const na = DIST[a], nb = DIST[b];
+  el.innerHTML = `<table class="cmp-tbl"><thead><tr><th>Indicador</th><th>Tema</th><th>${na} (${GRP[a]})</th><th>${nb} (${GRP[b]})</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ══════════════════════════════════════════
+// RADAR
+// ══════════════════════════════════════════
+function initRadar(){
+  const dims = {
+    'Salud':      [19,20,23,24,25,26,27,28],
+    'Socioec.':   [1,2,3,4],
+    'Vivienda':   [7,9,10,12,13],
+    'Agua/San.':  [14,16,17,18],
+    'Comunidad':  [33,34,35,36],
+    'Clima':      [29,30,31,32],
+  };
+  function score(idxList, grpIdxs){
+    let sum=0, count=0;
+    idxList.forEach(i=>{
+      const ind = IND43[i];
+      if(!ind) return;
+      grpIdxs.forEach(g=>{
+        const v = ind.v[g];
+        const norm = ind.tipo==='pct' ? v : Math.min(v/30*100,100);
+        sum += ind.mejor==='bajo' ? Math.max(0,100-norm) : norm;
+        count++;
+      });
+    });
+    return count ? Math.round(sum/count) : 0;
+  }
+  const labels = Object.keys(dims);
+  const ctrl = labels.map(k=>score(dims[k],[0,1]));
+  const intv = labels.map(k=>score(dims[k],[2,3]));
+  const el = document.getElementById('c-radar');
+  if(!el) return;
+  new Chart(el,{type:'radar',data:{labels,datasets:[
+    {label:'Control',data:ctrl,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.15)',borderWidth:2,pointBackgroundColor:'#378ADD',pointRadius:4},
+    {label:'Intervención',data:intv,borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,0.15)',borderWidth:2,pointBackgroundColor:'#D85A30',pointRadius:4},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{color:'#888780',font:{size:9},stepSize:20},pointLabels:{color:'#5f5e5a',font:{size:11}},grid:{color:'rgba(128,128,128,0.15)'},angleLines:{color:'rgba(128,128,128,0.15)'}}}}});
+}
+
+// ══════════════════════════════════════════
+// EMBUDO
+// ══════════════════════════════════════════
+const FUNNEL_DATA = [
+  // [hogares con síntomas, buscó atención, consultó posta, prueba disponible, diagnóstico confirmado]
+  {name:'Belén',          v:[49.6, 49.2, 27.5, 27.5, 4.8]},
+  {name:'Yurimaguas',     v:[51.0, 54.3, 22.4, 13.7, 31.7]},
+  {name:'Punchana',       v:[52.5, 55.6, 14.8, 10.7, 0]},
+  {name:'San Juan B.',    v:[58.3, 90.3, 86.7, 60.4, 40.0]},
+  {name:'Todos (prom.)',  v:[52.9, 62.4, 37.9, 28.1, 19.1]},
+];
+const FUNNEL_LABELS = ['Reportó síntomas','Consultó inmediatamente','Fue a la posta','Prueba disponible','Diagnóstico confirmado'];
+let currentFunnel = 0;
+
+function setFunnel(idx, btn){
+  currentFunnel = idx;
+  document.querySelectorAll('.fnb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderFunnel();
+}
+
+function renderFunnel(){
+  const d = FUNNEL_DATA[currentFunnel];
+  const el = document.getElementById('funnel-viz');
+  if(!el) return;
+  const colors = ['#1D9E75','#378ADD','#534AB7','#BA7517','#D85A30'];
+  el.innerHTML = FUNNEL_LABELS.map((lbl,i)=>{
+    const pct = d.v[i];
+    const drop = i>0 ? (d.v[i-1]-pct).toFixed(1) : null;
+    const w = Math.max(pct, 5);
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:3px">
+        <div style="width:22px;height:22px;border-radius:50%;background:${colors[i]};color:#fff;font-size:10px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+        <span style="font-size:12px;color:var(--n2);flex:1">${lbl}</span>
+        <span style="font-size:15px;font-weight:500;color:var(--n)">${pct}%</span>
+        ${drop!==null ? `<span style="font-size:10px;color:#A32D2D;width:60px;text-align:right">-${drop}pp</span>` : '<span style="width:60px"></span>'}
+      </div>
+      <div style="height:14px;background:var(--bg);border-radius:7px;overflow:hidden;margin-left:32px">
+        <div style="height:100%;width:${w}%;background:${colors[i]};border-radius:7px;transition:width .4s ease"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// HEATMAP PREVENTIVO
+// ══════════════════════════════════════════
+const HMAP = [
+  {nom:'Consulta inmediata',        v:[49.2,54.3,55.6,90.3]},
+  {nom:'Necesidad de prueba',       v:[66.3,89.9,83.3,98.5]},
+  {nom:'Acepta fumigación',         v:[84.1,88.0,91.8,82.5]},
+  {nom:'Fumigación reciente <3m',   v:[26.7,2.3,35.0,1.2]},
+  {nom:'Usa mosquitero',            v:[43.4,38.4,45.1,47.5]},
+  {nom:'Importa consultar rápido',  v:[62.4,37.6,41.7,93.8]},
+  {nom:'Importa tomar medicina',    v:[73.7,39.9,59.9,93.5]},
+  {nom:'Importa fumigar/limpiar',   v:[74.5,51.1,62.2,91.5]},
+  {nom:'Participa prev. comunidad', v:[61.2,46.9,53.5,29.7]},
+  {nom:'Desinf. agua antes beber',  v:[84.9,83.6,91.4,67.5]},
+];
+
+function initHeatmap(){
+  const el = document.getElementById('heatmap-viz');
+  if(!el) return;
+  const colW = 90;
+  function cellColor(v){
+    if(v>=70) return {bg:'#E1F5EE',tx:'#085041'};
+    if(v>=40) return {bg:'#FAEEDA',tx:'#633806'};
+    return {bg:'#FCEBEB',tx:'#791F1F'};
+  }
+  let html = `<table style="border-collapse:collapse;width:100%;font-size:11px">
+    <thead><tr><th style="text-align:left;padding:6px 8px;color:var(--n3);font-size:10px;text-transform:uppercase;border-bottom:1px solid var(--brd)">Comportamiento</th>`;
+  DIST.forEach((d,i)=>{ html+=`<th style="width:${colW}px;text-align:center;padding:6px 4px;color:${COL[i]};font-size:10px;border-bottom:1px solid var(--brd)">${d}</th>`; });
+  html += '</tr></thead><tbody>';
+  HMAP.forEach(row=>{
+    html += `<tr><td style="padding:5px 8px;color:var(--n2);border-bottom:0.5px solid var(--brd);white-space:nowrap">${row.nom}</td>`;
+    row.v.forEach(v=>{
+      const c = cellColor(v);
+      html += `<td style="padding:4px;text-align:center;border-bottom:0.5px solid var(--brd)"><div style="background:${c.bg};color:${c.tx};border-radius:4px;padding:5px 4px;font-weight:500;font-size:12px">${v.toFixed(1)}%</div></td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// LIKERT PERCEPCIONES CLIMÁTICAS
+// ══════════════════════════════════════════
+const LIKERT_DATA = [
+  {lbl:'Lluvias favorecen zancudos\n(Control)',     v:[9.8,34.6,26.3,22.9,6.4],   grp:'Control'},
+  {lbl:'Lluvias favorecen zancudos\n(Intervención)',v:[4.5,22.3,21.1,43.1,9.0],   grp:'Intervención'},
+  {lbl:'CC afecta malaria/dengue\n(Control)',        v:[14.3,33.7,14.6,29.2,8.2],  grp:'Control'},
+  {lbl:'CC afecta malaria/dengue\n(Intervención)',   v:[5.1,13.0,14.9,49.7,17.2],  grp:'Intervención'},
+  {lbl:'Ríos se secan más\n(Control)',               v:[13.2,32.4,19.8,27.8,6.8],  grp:'Control'},
+  {lbl:'Ríos se secan más\n(Intervención)',          v:[4.1,15.8,19.4,47.5,13.2],  grp:'Intervención'},
+  {lbl:'Más olas de calor\n(Control)',               v:[6.8,20.1,11.3,42.3,19.5],  grp:'Control'},
+  {lbl:'Más olas de calor\n(Intervención)',          v:[3.2,11.4,9.8,52.0,23.5],   grp:'Intervención'},
+];
+const LCOLORS = ['#D85A30','#BA7517','#888780','#378ADD','#1D9E75'];
+const LLABELS = ['Nada','Poco','Moderadamente','Bastante','Extremadamente'];
+
+function initLikert(){
+  const el = document.getElementById('likert-viz');
+  if(!el) return;
+  let html = '';
+  LIKERT_DATA.forEach((row,ri)=>{
+    if(ri%2===0 && ri>0) html+=`<div style="height:1px;background:var(--brd);margin:8px 0"></div>`;
+    const tag = row.grp==='Control' ? `<span style="font-size:9px;padding:1px 5px;border-radius:10px;background:#E6F1FB;color:#0C447C;font-weight:500">Control</span>` : `<span style="font-size:9px;padding:1px 5px;border-radius:10px;background:#FAECE7;color:#712B13;font-weight:500">Intervención</span>`;
+    html+=`<div class="likert-row">
+      <div class="likert-label">${row.lbl.replace('\n','<br>')} ${tag}</div>
+      <div style="flex:1;height:22px;display:flex;border-radius:4px;overflow:hidden">`;
+    row.v.forEach((pct,i)=>{
+      html+=`<div title="${LLABELS[i]}: ${pct}%" style="width:${pct}%;background:${LCOLORS[i]};display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:500;overflow:hidden;transition:width .3s">${pct>=8?pct.toFixed(0)+'%':''}</div>`;
+    });
+    html+='</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// BUSCADOR DE INDICADORES
+// ══════════════════════════════════════════
+function filterIndicadores(){
+  const q = document.getElementById('ind-search').value.toLowerCase().trim();
+  const el = document.getElementById('ind-result');
+  if(!el) return;
+  const matches = q.length<2 ? IND43 : IND43.filter(d=>d.nom.toLowerCase().includes(q)||d.tema.toLowerCase().includes(q)||d.id.toLowerCase().includes(q));
+  if(!matches.length){ el.innerHTML='<p style="color:var(--n3);font-size:12px">Sin resultados.</p>'; return; }
+  el.innerHTML = matches.map(ind=>{
+    const fmt = v => ind.tipo==='pct' ? v.toFixed(1)+'%' : v.toFixed(1);
+    const max = Math.max(...ind.v);
+    const bars = DIST.map((d,i)=>{
+      const pct = ind.tipo==='pct' ? ind.v[i] : (ind.v[i]/max*100);
+      const isMax = ind.v[i]===max;
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:11px">
+        <span style="width:90px;color:${COL[i]};font-weight:500;flex-shrink:0">${d}</span>
+        <div style="flex:1;height:9px;background:var(--bg);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${COL[i]};border-radius:4px"></div>
+        </div>
+        <span style="width:44px;font-weight:${isMax?'600':'400'}">${fmt(ind.v[i])}</span>
+      </div>`;
+    }).join('');
+    const cv=ctrlVal(ind), iv=intvVal(ind), b=brecha(ind);
+    return `<div style="background:var(--card);border:0.5px solid var(--brd);border-radius:var(--rad);padding:12px 14px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:10px;padding:2px 6px;border-radius:10px;background:var(--bl);color:var(--bd)">${ind.id}</span>
+        <span style="font-weight:500;font-size:12px">${ind.nom}</span>
+        <span style="font-size:10px;padding:2px 6px;border-radius:10px;background:var(--gl);color:var(--gd);margin-left:auto">${ind.tema}</span>
+      </div>
+      ${bars}
+      <div style="margin-top:6px;padding-top:6px;border-top:0.5px solid var(--brd);font-size:10px;color:var(--n3);display:flex;gap:12px">
+        <span>Control: <strong style="color:var(--n)">${fmt(cv)}</strong></span>
+        <span>Intervención: <strong style="color:var(--n)">${fmt(iv)}</strong></span>
+        <span>Brecha: <strong style="color:${b>=0?'#0F6E56':'#A32D2D'}">${b>=0?'+':''}${fmt(b)}</strong></span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// HOOK INTO show() FOR NEW SECTIONS
+// ══════════════════════════════════════════
+const _origShow = show;
+function show(name, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  const sec = document.getElementById('s-'+name);
+  if(sec) sec.classList.add('on');
+  btn.classList.add('on');
+  if(!window._init) window._init={};
+  if(!window._init[name]){
+    window._init[name]=true;
+    initCharts(name);
+    if(name==='semaforo'){ renderSemaforo(); }
+    if(name==='comparador'){ renderComparador(); }
+    if(name==='radar'){ initRadar(); }
+    if(name==='funnel'){ renderFunnel(); }
+    if(name==='heatmap'){ initHeatmap(); }
+    if(name==='likert'){ initLikert(); }
+    if(name==='buscador'){ filterIndicadores(); }
+  }
+}
+
+</script>
+</body>
+</html>
