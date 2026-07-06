@@ -1495,7 +1495,7 @@ function renderComparador(){
 }
 
 // ══════════════════════════════════════════
-// RADAR
+// RADAR - VERSIÓN CORREGIDA
 // ══════════════════════════════════════════
 function initRadar(){
   const dims = {
@@ -1506,29 +1506,123 @@ function initRadar(){
     'Comunidad':  [33,34,35,36],
     'Clima':      [29,30,31,32],
   };
+  
   function score(idxList, grpIdxs){
-    let sum=0, count=0;
-    idxList.forEach(i=>{
+    // Calcular el promedio de cada indicador primero (entre los distritos del grupo)
+    let totalSum = 0;
+    let validIndicators = 0;
+    
+    idxList.forEach(i => {
       const ind = IND43[i];
       if(!ind) return;
-      grpIdxs.forEach(g=>{
-        const v = ind.v[g];
-        const norm = ind.tipo==='pct' ? v : Math.min(v/30*100,100);
-        sum += ind.mejor==='bajo' ? Math.max(0,100-norm) : norm;
-        count++;
+      
+      // Promedio de los distritos del grupo para este indicador
+      let grpSum = 0;
+      let grpCount = 0;
+      grpIdxs.forEach(g => {
+        if (g < ind.v.length) {
+          grpSum += ind.v[g];
+          grpCount++;
+        }
       });
+      
+      if (grpCount === 0) return;
+      
+      let avgValue = grpSum / grpCount;
+      
+      // Normalizar a escala 0-100
+      let norm;
+      if (ind.tipo === 'pct') {
+        norm = avgValue; // ya está en porcentaje
+      } else {
+        // Para variables numéricas: normalizar con tope 100
+        // Usamos un tope razonable según el indicador
+        let maxVal = 0;
+        // Determinar el máximo esperado según el indicador
+        if (ind.id === 'B10') maxVal = 600; // gasto semanal
+        else if (ind.id === 'B12' || ind.id === 'B13') maxVal = 60; // minutos
+        else if (ind.id === 'A1') maxVal = 50; // años
+        else maxVal = 100;
+        norm = Math.min(avgValue / maxVal * 100, 100);
+      }
+      
+      // Invertir si "menos es mejor"
+      const scoreValue = ind.mejor === 'bajo' ? Math.max(0, 100 - norm) : norm;
+      totalSum += scoreValue;
+      validIndicators++;
     });
-    return count ? Math.round(sum/count) : 0;
+    
+    return validIndicators > 0 ? Math.round(totalSum / validIndicators) : 0;
   }
+  
   const labels = Object.keys(dims);
-  const ctrl = labels.map(k=>score(dims[k],[0,1]));
-  const intv = labels.map(k=>score(dims[k],[2,3]));
+  const ctrl = labels.map(k => score(dims[k], [0, 1]));
+  const intv = labels.map(k => score(dims[k], [2, 3]));
+  
   const el = document.getElementById('c-radar');
   if(!el) return;
-  new Chart(el,{type:'radar',data:{labels,datasets:[
-    {label:'Control',data:ctrl,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.15)',borderWidth:2,pointBackgroundColor:'#378ADD',pointRadius:4},
-    {label:'Intervención',data:intv,borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,0.15)',borderWidth:2,pointBackgroundColor:'#D85A30',pointRadius:4},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{color:'#888780',font:{size:9},stepSize:20},pointLabels:{color:'#5f5e5a',font:{size:11}},grid:{color:'rgba(128,128,128,0.15)'},angleLines:{color:'rgba(128,128,128,0.15)'}}}}});
+  
+  // Destruir gráfico anterior si existe
+  if(window._radarChart) {
+    window._radarChart.destroy();
+  }
+  
+  window._radarChart = new Chart(el, {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Control',
+          data: ctrl,
+          borderColor: '#378ADD',
+          backgroundColor: 'rgba(55,138,221,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#378ADD',
+          pointRadius: 4
+        },
+        {
+          label: 'Intervención',
+          data: intv,
+          borderColor: '#D85A30',
+          backgroundColor: 'rgba(216,90,48,0.15)',
+          borderWidth: 2,
+          pointBackgroundColor: '#D85A30',
+          pointRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        r: {
+          min: 0,
+          max: 100,
+          ticks: {
+            color: '#888780',
+            font: { size: 9 },
+            stepSize: 20
+          },
+          pointLabels: {
+            color: '#5f5e5a',
+            font: { size: 11 }
+          },
+          grid: {
+            color: 'rgba(128,128,128,0.15)'
+          },
+          angleLines: {
+            color: 'rgba(128,128,128,0.15)'
+          }
+        }
+      }
+    }
+  });
 }
 
 // ══════════════════════════════════════════
