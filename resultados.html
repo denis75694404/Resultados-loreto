@@ -185,10 +185,17 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
       <div class="cw" style="height:180px"><canvas id="c-muestra" role="img" aria-label="Viviendas por distrito">Belén 258, Yurimaguas 258, Punchana 257, SJB 259.</canvas></div>
     </div>
     <div class="card">
-      <div class="ct">Tasas de incidencia 2025 (por 100 hab.)</div><div class="cs">Malaria y dengue por distrito</div>
+      <div class="ct">Tasas de incidencia 2024 (por 100 hab.)</div><div class="cs">Malaria y dengue por distrito - Línea base</div>
       <div class="leg"><span class="li"><span class="ld" style="background:#D85A30"></span>Malaria</span><span class="li"><span class="ld" style="background:#378ADD"></span>Dengue</span></div>
-      <div class="cw" style="height:180px"><canvas id="c-epi-resumen" role="img" aria-label="Tasas de incidencia de malaria y dengue 2025">Datos epidemiológicos.</canvas></div>
+      <div class="cw" style="height:180px"><canvas id="c-epi-resumen" role="img" aria-label="Tasas de incidencia de malaria y dengue 2024">Datos epidemiológicos línea base 2024.</canvas></div>
     </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--r)">
+    <div class="ct">⚠ Nota metodológica crítica: desequilibrio de línea de base y análisis de Diferencias en Diferencias (DID)</div>
+    <div class="cs">Preocupación más urgente derivada de los resultados basales – requiere máxima atención antes de la evaluación de impacto</div>
+    <div class="ins-r ins" style="margin-top:0"><p>La línea de base revela diferencias estadísticamente significativas entre el grupo de intervención (Punchana, SJB) y el grupo control (Belén, Yurimaguas) en <strong>~30 de los 43 indicadores clave</strong>, abarcando dominios socioeconómicos (gasto semanal +S/65.30, p&lt;0.001), de vivienda y saneamiento (material noble −8.9pp; desagüe −7.2pp), WASH (agua superficial +21.1pp) y conductas de salud (consulta inmediata +21.4pp). Estas diferencias basales <strong>violan parcialmente el supuesto de comparabilidad</strong> sobre el que descansa el diseño DID del proyecto VIDA: si los grupos parten de niveles y contextos distintos, parte del cambio observado podría deberse a trayectorias diferenciales y no a la intervención.</p></div>
+    <div style="font-size:11px;color:var(--n2);line-height:1.6;margin-top:10px"><strong>Recomendaciones para la fase analítica:</strong> (1) el análisis DID debe <em>ajustar por las covariables desequilibradas</em> de esta línea de base (DID con covariables/ANCOVA); (2) considerar métodos complementarios como emparejamiento por puntaje de propensión (PSM+DID) o ponderación para mejorar la comparabilidad; (3) verificar, en la medida de lo posible, el supuesto de tendencias paralelas con los datos epidemiológicos históricos 2024–2026 ya disponibles; y (4) <strong>consultar con un estadístico</strong> antes de definir el modelo de evaluación, tal como se recomienda encarecidamente en la revisión del estudio. La tabla siguiente resume las principales diferencias que deberán controlarse.</div>
   </div>
 
   <div class="card">
@@ -231,14 +238,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 
   <div class="g2">
     <div class="card">
-      <div class="ct">Tasa de incidencia de malaria 2025 y 2026 (%)</div><div class="cs">Por 100 habitantes · semanas 1-52 (2025) y 1-13 (2026)</div>
-      <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>2025</span><span class="li"><span class="ld" style="background:#D85A30;opacity:.6"></span>2026</span></div>
-      <div class="cw" style="height:200px"><canvas id="c-malaria" role="img" aria-label="Tasas de malaria 2025 y 2026">Datos de malaria por distrito.</canvas></div>
+      <div class="ct">Tasa de incidencia de malaria 2024, 2025 y 2026 (%)</div><div class="cs">Por 100 habitantes · semanas 1-52 (2024 y 2025) y 1-25 (2026)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#888780"></span>2024</span><span class="li"><span class="ld" style="background:#378ADD"></span>2025</span><span class="li"><span class="ld" style="background:#D85A30;opacity:.6"></span>2026</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-malaria" role="img" aria-label="Tasas de malaria 2024, 2025 y 2026">Datos de malaria por distrito.</canvas></div>
     </div>
     <div class="card">
-      <div class="ct">Tasa de incidencia de dengue 2025 y 2026 (%)</div><div class="cs">Por 100 habitantes · semanas 1-52 (2025) y 1-13 (2026)</div>
-      <div class="leg"><span class="li"><span class="ld" style="background:#1D9E75"></span>2025</span><span class="li"><span class="ld" style="background:#1D9E75;opacity:.5"></span>2026</span></div>
-      <div class="cw" style="height:200px"><canvas id="c-dengue" role="img" aria-label="Tasas de dengue 2025 y 2026">Datos de dengue por distrito.</canvas></div>
+      <div class="ct">Tasa de incidencia de dengue 2024, 2025 y 2026 (%)</div><div class="cs">Por 100 habitantes · semanas 1-52 (2024 y 2025) y 1-25 (2026)</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#888780"></span>2024</span><span class="li"><span class="ld" style="background:#1D9E75"></span>2025</span><span class="li"><span class="ld" style="background:#1D9E75;opacity:.5"></span>2026</span></div>
+      <div class="cw" style="height:200px"><canvas id="c-dengue" role="img" aria-label="Tasas de dengue 2024, 2025 y 2026">Datos de dengue por distrito.</canvas></div>
     </div>
   </div>
 
@@ -246,16 +253,16 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
     <div class="ct">Resumen epidemiológico por distrito</div>
     <div style="overflow-x:auto">
     <table class="tbl">
-      <thead><tr><th>Distrito</th><th>Grupo</th><th>Población</th><th>Malaria casos 2025</th><th>Malaria tasa 2025 (%)</th><th>Malaria casos 2026*</th><th>Malaria tasa 2026 (%)</th><th>Dengue casos 2025</th><th>Dengue tasa 2025 (%)</th><th>Dengue casos 2026*</th><th>Dengue tasa 2026 (%)</th></tr></thead>
+      <thead><tr><th>Distrito</th><th>Grupo</th><th>Población 2024</th><th>Malaria casos 2024</th><th>Malaria tasa 2024 (%)</th><th>Malaria casos 2025</th><th>Malaria tasa 2025 (%)</th><th>Malaria casos 2026*</th><th>Malaria tasa 2026 (%)</th><th>Dengue casos 2024</th><th>Dengue tasa 2024 (%)</th><th>Dengue casos 2025</th><th>Dengue tasa 2025 (%)</th><th>Dengue casos 2026*</th><th>Dengue tasa 2026 (%)</th></tr></thead>
       <tbody>
-        <tr><td>Belén</td><td><span class="pill pb">Control</span></td><td>61,641</td><td>153</td><td>0.25</td><td>18</td><td>0.03</td><td>438</td><td>0.71</td><td>104</td><td>0.17</td></tr>
-        <tr><td>Yurimaguas</td><td><span class="pill pb">Control</span></td><td>105,973</td><td>44</td><td>0.04</td><td>0</td><td>0.00</td><td>1,439</td><td>1.36</td><td>546</td><td>0.50</td></tr>
-        <tr><td>Punchana</td><td><span class="pill pt">Intervención</span></td><td>74,408</td><td>482</td><td>0.65</td><td>33</td><td>0.04</td><td>396</td><td>0.53</td><td>44</td><td>0.06</td></tr>
-        <tr><td>San Juan Bautista</td><td><span class="pill pt">Intervención</span></td><td>152,144</td><td>1,644</td><td>1.08</td><td>171</td><td>0.11</td><td>758</td><td>0.50</td><td>250</td><td>0.16</td></tr>
+        <tr><td>Belén</td><td><span class="pill pb">Control</span></td><td>61,972</td><td>123</td><td>0.20</td><td>153</td><td>0.25</td><td>28</td><td>0.05</td><td>267</td><td>0.43</td><td>438</td><td>0.71</td><td>115</td><td>0.19</td></tr>
+        <tr><td>Yurimaguas</td><td><span class="pill pb">Control</span></td><td>102,802</td><td>131</td><td>0.13</td><td>44</td><td>0.04</td><td>4</td><td>0.05</td><td>3,912</td><td>3.81</td><td>1,439</td><td>1.36</td><td>1291</td><td>1.18</td></tr>
+        <tr><td>Punchana</td><td><span class="pill pt">Intervención</span></td><td>74,500</td><td>895</td><td>1.20</td><td>482</td><td>0.65</td><td>62</td><td>0.08</td><td>517</td><td>0.69</td><td>396</td><td>0.53</td><td>38</td><td>0.05</td></tr>
+        <tr><td>San Juan Bautista</td><td><span class="pill pt">Intervención</span></td><td>148,711</td><td>2484</td><td>1.67</td><td>1,644</td><td>1.08</td><td>298</td><td>0.19</td><td>695</td><td>0.47</td><td>758</td><td>0.50</td><td>221</td><td>0.14</td></tr>
       </tbody>
     </table>
     </div>
-    <div class="ins-a ins"><p>* 2026: semanas 1-13 únicamente. Fuente: Sala Situacional de Enfermedades Metaxénicas MINSA 2025; proyección INEI 2008/2018.</p></div>
+    <div class="ins-a ins"><p>* 2026: semanas 1-25 únicamente. Fuente: Sala Situacional de Enfermedades Metaxénicas MINSA 2025; proyección INEI 2008/2018.</p></div>
   </div>
 
   <div class="g2">
@@ -455,6 +462,21 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
       <div class="ins"><p>Punchana es el único con 8 hogares de electricidad intermitente, riesgo para el almacenamiento de vacunas y medicamentos a nivel domiciliario.</p></div>
     </div>
   </div>
+
+  <div class="card">
+    <div class="ct">Índice de patrimonio – estatus socioeconómico compuesto (0–100)</div>
+    <div class="cs">Índice de riqueza a nivel distrital construido a partir de bienes durables, calidad de la vivienda y servicios básicos. Activa o desactiva componentes para recalcular el índice en tiempo real.</div>
+    <div id="ip-controls" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px"></div>
+    <div id="ip-result"></div>
+    <details style="margin-top:12px">
+      <summary style="font-size:11px;font-weight:500;color:var(--b);cursor:pointer">Ver metodología del índice de patrimonio</summary>
+      <div style="font-size:11px;color:var(--n2);line-height:1.6;padding:10px 0 0">
+        <p><strong>1. Componentes.</strong> Se seleccionaron 13 indicadores binarios de tenencia y condiciones del hogar, agrupados en tres dominios: <em>bienes durables</em> (televisor, smartphone, celular, radio, computadora, refrigeradora, vehículo, carro/camión – Tablas 60–67 del Producto 4), <em>calidad de la vivienda</em> (paredes de material noble y piso de cemento/cerámica – Tablas C7–C9) y <em>servicios básicos</em> (electricidad de red pública, agua entubada en la vivienda y baño conectado a desagüe – Tablas C2, 171 y 179).</p>
+        <p style="margin-top:6px"><strong>2. Cálculo.</strong> Para cada distrito, el índice es el promedio simple (no ponderado) del porcentaje de cobertura de los componentes seleccionados, en escala 0–100. Un valor de 100 indicaría que todos los hogares del distrito poseen todos los componentes. Los promedios de grupo (Control = Belén+Yurimaguas; Intervención = Punchana+SJB) se calculan como media de los distritos que los componen.</p>
+        <p style="margin-top:6px"><strong>3. Interpretación y limitaciones.</strong> Es un índice agregado tipo "recuento de activos", inspirado en el índice de riqueza DHS, pero calculado con proporciones distritales en lugar de un análisis de componentes principales (PCA) sobre microdatos de hogares, que sería el método recomendado en la fase analítica del DID. Todos los componentes tienen igual peso, por lo que el índice describe posición relativa entre distritos y no es comparable con índices de riqueza de otras encuestas.</p>
+      </div>
+    </details>
+  </div>
 </div>
 
 <!-- ═══════════ SALUD Y MALARIA ═══════════ -->
@@ -485,9 +507,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
       <div class="cw" style="height:200px"><canvas id="c-importancia" role="img" aria-label="Importancia de acciones preventivas por distrito">Datos.</canvas></div>
     </div>
     <div class="card">
-      <div class="ct">Disponibilidad de pruebas diagnósticas en la posta</div>
-      <div class="cs">Solo hogares que alguna vez fueron a posta por fiebre</div>
+      <div class="ct">Disponibilidad de pruebas diagnósticas en la posta (F19)</div>
+      <div class="cs" id="cs-pruebas">Todos los hogares con disposición favorable a la prueba (F17); "Nunca fue" = no acudió a la posta por fiebre en el último año</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+        <button class="fnb on" id="pt-btn-0" onclick="setPruebas(0)">Todos (incluye "Nunca fue")</button>
+        <button class="fnb" id="pt-btn-1" onclick="setPruebas(1)">Solo quienes acudieron a la posta (renormalizado)</button>
+      </div>
       <div class="cw" style="height:200px"><canvas id="c-pruebas" role="img" aria-label="Disponibilidad de pruebas diagnósticas">Datos.</canvas></div>
+      <div class="ins-a ins"><p><strong>Nota de corrección:</strong> la pregunta F19 se aplicó a todos los hogares que consideran necesaria la prueba (F17), no solo a quienes visitaron la posta; por eso "Nunca fue" es una respuesta válida en la vista completa (Tabla 99, Producto 4). Para analizar la disponibilidad real de pruebas, usa la vista renormalizada, que excluye "Nunca fue" y recalcula los porcentajes solo entre quienes sí acudieron (Belén n=74, Yurimaguas n=51, Punchana n=29, SJB n=221). En Punchana y Yurimaguas ese subgrupo es pequeño, por lo que sus porcentajes deben interpretarse con cautela.</p></div>
     </div>
   </div>
 
@@ -512,6 +539,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
         <div class="br"><span class="bl">Belén</span><div class="bt"><div class="bf" style="width:27%;background:var(--b)"></div></div><span class="bv">10.5%</span></div>
       </div>
       <div class="ins-r ins"><p>SJB presenta carga alta de síntomas depresivos consistente en ambos indicadores (37-38%), factor que puede limitar la adopción de prácticas preventivas. Prioridad para salud mental.</p></div>
+      <details style="margin-top:8px">
+        <summary style="font-size:11px;font-weight:500;color:var(--b);cursor:pointer">¿Por qué se incluyó esta pregunta en la encuesta?</summary>
+        <div style="font-size:11px;color:var(--n2);line-height:1.6;padding:8px 0 0">
+          <p>Las preguntas F16.1 y F16.2 corresponden a los dos ítems del tamizaje breve de depresión tipo PHQ-2 ("poco interés o placer en hacer cosas" y "sentirse decaído, deprimido o sin esperanza"). No buscan diagnosticar, sino caracterizar la carga de síntomas depresivos como determinante del comportamiento en salud: la evidencia y el propio Producto 4 (Tablas 95–96) señalan que una mayor carga de síntomas depresivos puede reducir la capacidad de los hogares para adoptar y sostener prácticas preventivas (uso de mosquitero, consulta oportuna, control de criaderos) y la adherencia a tratamientos. Además, sirve como covariable de línea de base para el análisis DID: si los grupos difieren en bienestar mental al inicio (SJB 37.8% vs. Belén 10.5% en F16.2), esta diferencia debe considerarse al atribuir efectos a la intervención.</p>
+        </div>
+      </details>
     </div>
   </div>
 
@@ -559,6 +592,13 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
         <div class="dc" style="background:var(--cl)"><div class="dc-badge pill" style="background:var(--cl);color:var(--cd)">Intervención – SJB</div><div class="dc-h">Lluvia+ola de calor (50.2%)</div><p style="font-size:11px;color:var(--cd)">Alta percepción de impacto: 73.7% afectado</p></div>
       </div>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">¿Contradicción en San Juan Bautista? Conocimiento del término vs. percepción experiencial</div>
+    <div class="cs">SJB registra a la vez el mayor desconocimiento del término "cambio climático" (47.5% responde "Nada" en D2) y las percepciones más intensas de sus efectos (89.2% olas de calor; 79.1% CC afecta brotes)</div>
+    <div id="cc-paradoja"></div>
+    <div class="ins-a ins"><p><strong>Interpretación:</strong> no es una contradicción lógica, porque las preguntas miden dimensiones distintas. La pregunta D2 ("¿Ha escuchado sobre cambio climático y calentamiento global?") mide familiaridad con el <em>concepto abstracto / término técnico</em>, mientras que las preguntas D4–D7 miden la <em>percepción de fenómenos concretos vividos</em> (calor, lluvias, brotes). Como concluye el Producto 4 (Tabla 102), SJB, siendo el distrito con menor conocimiento formal del tema, presenta a la vez las percepciones más intensas sobre sus efectos, lo que refleja una conciencia basada en la experiencia directa más que en el conocimiento teórico. La coexistencia de ambos extremos en SJB es coherente: su población experimenta los fenómenos climáticos y los asocia con las enfermedades, aunque no los nombre con el término técnico. Implicancia programática: en SJB la sensibilización no debe partir de cero, sino conectar la experiencia vivida con el marco conceptual del cambio climático.</p></div>
   </div>
 
   <div class="card">
@@ -656,25 +696,42 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
   </div>
 
   <div class="card">
-    <div class="ct">Indicadores WASH completos</div>
+    <div class="ct">Suministro de agua entubada: acceso vs. continuidad – dos dimensiones separadas</div>
+    <div class="cs">Acceso = % de hogares conectados a agua entubada en la vivienda (I1, Tabla 171) · Continuidad = horas/día de suministro entre los hogares conectados (I2, Tabla 173)</div>
+    <div id="agua-2d"></div>
+    <div class="ins-a ins"><p><strong>Hallazgo clave:</strong> acceso y continuidad no van de la mano. Yurimaguas tiene la menor cobertura de agua entubada (48.3%) pero suministro casi continuo (23.7 h/día) entre los conectados, complementado con compra de agua tratada (45.8%). En contraste, Punchana (89.8%) y San Juan Bautista (86.1%) tienen alta cobertura, pero el suministro se limita a ~4.1 y 8.6 horas al día respectivamente; Belén combina la mayor cobertura (91.4%) con solo 4.5 h/día. Analizar solo la cobertura sobreestimaría el acceso efectivo al agua en los distritos de intervención: la baja continuidad obliga al almacenamiento domiciliario, que sin recipientes cubiertos crea criaderos de <em>Aedes aegypti</em>.</p></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Indicadores WASH – tabla reestructurada por subsecciones</div>
+    <div class="cs">Fuente de agua → tratamiento → disponibilidad → higiene → saneamiento. Valores verificados en Tablas 80, 171, 173, 179–181 del Producto 4.</div>
+    <div style="overflow-x:auto">
     <table class="tbl">
       <thead><tr><th>Indicador</th><th>Belén</th><th>Yurimaguas</th><th>Punchana</th><th>San Juan B.</th></tr></thead>
       <tbody>
-        <tr><td>Agua entubada en vivienda (Grupo A)</td><td>91.4%</td><td>48.3%</td><td>89.8%</td><td>86.1%</td></tr>
-        <tr><td>Agua tratada comprada (Yurimaguas modelo)</td><td>0.5%</td><td>45.8%</td><td>1.5%</td><td>0.0%</td></tr>
-        <tr><td>Pozo excavado no protegido (riesgo)</td><td>0.0%</td><td>71.4%*</td><td>0.0%</td><td>0.0%</td></tr>
-        <tr><td>Agua superficial (río, lago)</td><td>5.6%*</td><td>0.0%</td><td>23.5%*</td><td>28.6%*</td></tr>
-        <tr><td>Agua de lluvia</td><td>2.8%*</td><td>0.0%</td><td>0.0%</td><td>57.1%*</td></tr>
-        <tr><td>Sin tratamiento domiciliario</td><td>10.9%</td><td>2.7%</td><td>7.0%</td><td>5.0%</td></tr>
-        <tr><td>Hierven el agua</td><td>55.0%</td><td>18.2%</td><td>58.4%</td><td>20.8%</td></tr>
-        <tr><td>Grifo o pilón público</td><td>29.8%</td><td>20.5%</td><td>33.1%</td><td>46.7%</td></tr>
-        <tr><td>Lugar lavado manos: instalación fija en vivienda</td><td colspan="4">Control: 78.9% · Intervención: 69.8% (p=0.0004)</td></tr>
-        <tr><td>Acceso a jabón en lugar de lavado</td><td colspan="4">Dato disponible en base de datos – diferencia significativa entre grupos</td></tr>
-        <tr><td>Desagüe conectado (saneamiento)</td><td colspan="4">Control: 85.5% · Intervención: 78.3% (p=0.022)</td></tr>
-        <tr><td>Letrina o silo</td><td colspan="4">Control: 10.1% · Intervención: 18.4%</td></tr>
+        <tr><td colspan="5" style="background:var(--bl);color:var(--bd);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px">1. Fuente de agua – mejorada / segura</td></tr>
+        <tr><td style="padding-left:1.4em">Agua entubada en vivienda (red pública)</td><td>91.4%</td><td>48.3%</td><td>89.8%</td><td>86.1%</td></tr>
+        <tr><td style="padding-left:1.4em">Agua tratada comprada</td><td>0.5%</td><td>45.8%</td><td>1.5%</td><td>0.0%</td></tr>
+        <tr><td style="padding-left:1.4em">Grifo o pilón público</td><td>7.7%</td><td>0.4%</td><td>4.9%</td><td>1.6%</td></tr>
+        <tr><td colspan="5" style="background:var(--rl);color:var(--rd);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px">2. Fuente de agua – no mejorada / insegura (para consumo, % dentro del Grupo B)†</td></tr>
+        <tr><td style="padding-left:1.4em">Pozo excavado no protegido</td><td>0.0%</td><td>71.4%</td><td>0.0%</td><td>0.0%</td></tr>
+        <tr><td style="padding-left:1.4em">Agua superficial (río, lago/cocha)</td><td>5.6%</td><td>0.0%</td><td>23.5%</td><td>28.6%</td></tr>
+        <tr><td style="padding-left:1.4em">Agua de lluvia‡</td><td>2.8%</td><td>0.0%</td><td>0.0%</td><td>57.1%</td></tr>
+        <tr><td colspan="5" style="background:var(--tl);color:var(--td);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px">3. Tratamiento de agua en el hogar (antes de beberla)</td></tr>
+        <tr><td style="padding-left:1.4em">Hierve el agua</td><td>55.0%</td><td>18.2%</td><td>58.4%</td><td>20.8%</td></tr>
+        <tr><td style="padding-left:1.4em">Sin tratamiento domiciliario</td><td>10.9%</td><td>2.7%</td><td>7.0%</td><td>5.0%</td></tr>
+        <tr><td colspan="5" style="background:var(--al);color:var(--ad);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px">4. Disponibilidad de agua (entre hogares con agua entubada)</td></tr>
+        <tr><td style="padding-left:1.4em">Disponibilidad diaria (horas/día, media)</td><td>4.5 h</td><td>23.7 h</td><td>4.1 h</td><td>8.6 h</td></tr>
+        <tr><td colspan="5" style="background:var(--pl);color:var(--pd);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px">5. Higiene</td></tr>
+        <tr><td style="padding-left:1.4em">Lugar de lavado de manos: instalación fija en vivienda</td><td>71.3%</td><td>86.4%</td><td>61.5%</td><td>78.0%</td></tr>
+        <tr><td style="padding-left:1.4em">Jabón o detergente disponible en el lugar de lavado</td><td>100.0%</td><td>91.5%</td><td>97.3%</td><td>91.5%</td></tr>
+        <tr><td colspan="5" style="background:var(--gl);color:var(--gd);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px">6. Saneamiento</td></tr>
+        <tr><td style="padding-left:1.4em">Baño o letrina conectado a desagüe</td><td>84.5%</td><td>86.4%</td><td>77.8%</td><td>78.8%</td></tr>
+        <tr><td style="padding-left:1.4em">Letrina o silo (no conectado)</td><td>11.2%</td><td>8.9%</td><td>20.6%</td><td>16.2%</td></tr>
       </tbody>
     </table>
-    <div style="font-size:10px;color:var(--n3);margin-top:6px">* porcentaje dentro del subgrupo Grupo B (fuentes que requieren tratamiento)</div>
+    </div>
+    <div style="font-size:10px;color:var(--n3);margin-top:6px;line-height:1.5">† Porcentaje dentro del subgrupo Grupo B: fuentes de agua para beber que necesariamente requieren tratamiento.<br>‡ <strong>Clasificación del agua de lluvia:</strong> el JMP (OMS/UNICEF) considera el agua de lluvia una fuente "mejorada" cuando se capta y almacena de forma protegida. En este estudio se clasificó como insegura/que requiere tratamiento porque en la encuesta se registró como fuente de agua para beber dentro del Grupo B (fuentes que requieren tratamiento) y porque en el contexto amazónico la captación y el almacenamiento suelen realizarse en recipientes abiertos, con alto riesgo de contaminación y de convertirse en criaderos de vectores. Si se adoptara la clasificación JMP estricta, el 57.1% de SJB (Grupo B) pasaría a la categoría mejorada, lo que cambiaría el balance de riesgo entre grupos; por ello se explicita el criterio adoptado.</div>
   </div>
 </div>
 
@@ -1161,6 +1218,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
     <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Grupo control (Belén + Yurimaguas)</span><span class="li"><span class="ld" style="background:#D85A30"></span>Grupo intervención (Punchana + SJB)</span></div>
     <div class="cw" style="height:380px"><canvas id="c-radar" role="img" aria-label="Radar multidimensional control vs intervención">Comparación de 6 dimensiones entre grupos.</canvas></div>
     <div class="ins-a ins" style="margin-top:12px"><p>Interpretación: valores más altos indican mejor posición relativa en esa dimensión. La dimensión Salud mide comportamientos preventivos; Clima mide conciencia del riesgo climático; Comunidad mide participación y organización comunitaria.</p></div>
+    <details style="margin-top:12px" ontoggle="if(this.open)renderRadarDetalle()">
+      <summary style="font-size:11px;font-weight:500;color:var(--b);cursor:pointer">¿Por qué el radar muestra grupos similares si ~30 de 43 indicadores tienen diferencias significativas? Ver metodología y desglose por dimensión</summary>
+      <div style="font-size:11px;color:var(--n2);line-height:1.6;padding:10px 0">
+        <p><strong>Metodología de las puntuaciones compuestas.</strong> Cada dimensión promedia un subconjunto de los 43 indicadores clave (desglose abajo). Para cada indicador: (1) los porcentajes se usan directamente en escala 0–100 y las variables numéricas se normalizan (valor/30×100, tope 100); (2) si "menos es mejor" (p. ej. hospitalización), el valor se invierte (100−valor); (3) la puntuación del grupo es el promedio simple de sus dos distritos y de todos los indicadores de la dimensión.</p>
+        <p style="margin-top:6px"><strong>Por qué las diferencias individuales se diluyen.</strong> Tres razones aritméticas: <em>(a) compensación de signos</em> — dentro de una misma dimensión coexisten ventajas de dirección opuesta que se cancelan al promediar (en Agua/Saneamiento, la intervención gana +18.6pp en agua entubada pero pierde en agua superficial, desagüe y lavado de manos: el neto es casi cero); <em>(b) dilución de magnitudes</em> — una brecha significativa de 7–15pp en un indicador pesa 1/N al promediarse con indicadores casi idénticos entre grupos; y <em>(c) significancia ≠ magnitud</em> — con n=516 por grupo, diferencias pequeñas resultan estadísticamente significativas, pero aportan poco a un compuesto 0–100. El radar responde a la pregunta "¿qué perfil global tiene cada grupo?", mientras que la tabla de 43 indicadores responde "¿en qué indicadores puntuales difieren?"; ambas lecturas son complementarias y no contradictorias. Para el análisis DID importa la tabla de indicadores individuales, no el compuesto.</p>
+      </div>
+      <div id="radar-detalle"></div>
+    </details>
   </div>
 </div>
 
@@ -1240,11 +1305,22 @@ function initCharts(name){
   const so={scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#888780',font:{size:10}}},y:{stacked:true,grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888780',font:{size:10}}}}};
   if(name==='resumen'){
     mc('c-muestra','bar',D,[{data:[236,227,242,241],backgroundColor:'#378ADD'},{data:[22,31,15,18],backgroundColor:'#BA7517'}],{...so,plugins:{legend:{display:false}}});
-    mc('c-epi-resumen','bar',D,[{label:'Malaria',data:[0.25,0.04,0.65,1.08],backgroundColor:'#D85A30'},{label:'Dengue',data:[0.71,1.36,0.53,0.50],backgroundColor:'#378ADD'}],{});
+    mc('c-epi-resumen','bar',D,[
+      {label:'Malaria 2024',data:[0.20,0.13,1.20,1.67],backgroundColor:'#D85A30'},
+      {label:'Dengue 2024',data:[0.43,3.81,0.69,0.47],backgroundColor:'#378ADD'}
+    ],{});
   }
   if(name==='epidemio'){
-    mc('c-malaria','bar',D,[{label:'2025',data:[0.25,0.04,0.65,1.08],backgroundColor:C},{label:'2026*',data:[0.03,0.00,0.04,0.11],backgroundColor:C.map(c=>c+'88')}],{});
-    mc('c-dengue','bar',D,[{label:'2025',data:[0.71,1.36,0.53,0.50],backgroundColor:C},{label:'2026*',data:[0.17,0.50,0.06,0.16],backgroundColor:C.map(c=>c+'88')}],{});
+    mc('c-malaria','bar',D,[
+      {label:'2024',data:[0.20,0.13,1.20,1.67],backgroundColor:'#888780'},
+      {label:'2025',data:[0.25,0.04,0.65,1.08],backgroundColor:'#378ADD'},
+      {label:'2026*',data:[0.05,0.05,0.08,0.19],backgroundColor:'#D85A30'}
+    ],{});
+    mc('c-dengue','bar',D,[
+      {label:'2024',data:[0.43,3.81,0.69,0.47],backgroundColor:'#888780'},
+      {label:'2025',data:[0.71,1.36,0.53,0.50],backgroundColor:'#1D9E75'},
+      {label:'2026*',data:[0.19,1.18,0.05,0.14],backgroundColor:'#1D9E75'}
+    ],{});
     mc('c-diag','bar',['Malaria','Dengue','Ninguno'],[{label:'Belén',data:[2.4,2.4,95.2],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[2.4,29.3,65.9],backgroundColor:'#534AB7'},{label:'Punchana',data:[0,0,100],backgroundColor:'#1D9E75'},{label:'SJB',data:[20,20,60],backgroundColor:'#D85A30'}],{});
   }
   if(name==='demo'){
@@ -1259,6 +1335,7 @@ function initCharts(name){
     mc('c-suficiencia','bar',D,[{label:'Ahorra bien',data:[11.2,13.6,17.9,7.3],backgroundColor:'#1D9E75'},{label:'Ahorra un poco',data:[24.0,22.9,20.6,21.6],backgroundColor:'#378ADD'},{label:'Solo cubre gastos',data:[57.8,40.7,56.4,59.8],backgroundColor:'#BA7517'},{label:'Usa ahorros',data:[6.2,13.6,4.7,10.4],backgroundColor:'#D85A30'},{label:'Pide prestado',data:[0.8,9.3,0.4,0.8],backgroundColor:'#E24B4A'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
   }
   if(name==='vivienda'){
+    initPatrimonio();
     mc('c-pared','bar',D,[{label:'Ladrillo/cemento',data:[70.5,87.2,71.6,68.3],backgroundColor:'#378ADD'},{label:'Madera',data:[29.5,11.2,28.0,31.3],backgroundColor:'#D85A30'},{label:'Otro',data:[0,1.6,0.4,0.4],backgroundColor:'#888780'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
     mc('c-piso','bar',D,[{label:'Cemento',data:[52.7,72.9,48.6,75.3],backgroundColor:'#378ADD'},{label:'Loseta/cerámica',data:[24.4,14.7,24.1,8.1],backgroundColor:'#1D9E75'},{label:'Tierra/arena',data:[5.0,11.2,5.4,11.2],backgroundColor:'#D85A30'},{label:'Madera/machimbrado',data:[17.9,1.2,21.8,5.4],backgroundColor:'#888780'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
     mc('c-bienes','bar',['Televisor','Smartphone','Celular','Vehículo','Refrigeradora','Computadora','Radio'],[{label:'Belén',data:[85.7,76.4,98.4,71.7,91.5,35.7,75.2],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[83.3,92.2,58.9,62.4,81.4,43.0,44.6],backgroundColor:'#534AB7'},{label:'Punchana',data:[82.9,83.3,96.9,77.0,89.1,38.9,82.1],backgroundColor:'#1D9E75'},{label:'San Juan B.',data:[91.9,62.5,95.4,55.2,83.4,32.8,73.0],backgroundColor:'#D85A30'}],{});
@@ -1267,10 +1344,11 @@ function initCharts(name){
     mc('c-conducta','bar',D,[{label:'Va inmediato al establecimiento',data:[49.2,54.3,55.6,90.3],backgroundColor:'#1D9E75'},{label:'Va a farmacia',data:[26.4,21.7,15.6,5.0],backgroundColor:'#BA7517'},{label:'Trata en casa',data:[24.0,22.5,28.4,4.2],backgroundColor:'#D85A30'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
     mc('c-fumig','bar',D,[{label:'<3 meses',data:[26.7,2.3,35,1.2],backgroundColor:'#1D9E75'},{label:'3-5 meses',data:[16.7,9.7,14,3.1],backgroundColor:'#378ADD'},{label:'6-11 meses',data:[15.1,14,5.8,13.9],backgroundColor:'#BA7517'},{label:'≥1 año/nunca',data:[41.5,73.4,44.5,82.5],backgroundColor:'#D85A30'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
     mc('c-importancia','bar',['Consulta oportuna','Tomar medicina rápido','Fumigar/limpiar'],[{label:'Belén',data:[62.4,73.7,74.5],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[37.6,39.9,51.1],backgroundColor:'#534AB7'},{label:'Punchana',data:[41.7,59.9,62.2],backgroundColor:'#1D9E75'},{label:'SJB',data:[93.8,93.5,91.5],backgroundColor:'#D85A30'}],{});
-    mc('c-pruebas','bar',['Sí encontró prueba','No encontró prueba','Nunca fue'],[{label:'Belén',data:[27.5,15.8,56.7],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[13.7,9.6,76.7],backgroundColor:'#534AB7'},{label:'Punchana',data:[10.7,4.1,85.3],backgroundColor:'#1D9E75'},{label:'SJB',data:[60.4,26.3,13.3],backgroundColor:'#D85A30'}],{});
+    initPruebas();
     mc('c-protec','bar',['Mosquitero','Repelentes','Ambiente limpio','Fumigación'],[{label:'Belén',data:[43.4,19.8,17.8,10.5],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[38.4,16.3,32.2,8.9],backgroundColor:'#534AB7'},{label:'Punchana',data:[45.1,12.8,31.1,8.6],backgroundColor:'#1D9E75'},{label:'SJB',data:[47.5,21.6,20.8,6.2],backgroundColor:'#D85A30'}],{});
   }
   if(name==='clima'){
+    initParadoja();
     mc('c-cc-conoc','bar',D,[{label:'Nada',data:[17.1,19.8,16,47.5],backgroundColor:'#888780'},{label:'Poco',data:[44.6,41.9,54.5,28.2],backgroundColor:'#BA7517'},{label:'Moderado',data:[29.1,25.2,24.5,5.8],backgroundColor:'#378ADD'},{label:'Bastante/mucho',data:[9.3,13.2,5.1,18.6],backgroundColor:'#1D9E75'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
     mc('c-cc-perc','bar',['Brotes mal/den','Prevalencia zanc.','Lluvias→zanc.','Sequía ríos','Olas de calor'],[{label:'Belén',data:[58.9,59.7,54.3,39.1,64.8],backgroundColor:'#378ADD'},{label:'Yurimaguas',data:[31.4,28.3,31.4,30.6,58.2],backgroundColor:'#534AB7'},{label:'Punchana',data:[63.8,63,39.7,55.3,73.6],backgroundColor:'#1D9E75'},{label:'SJB',data:[78.8,84.9,78.8,84.5,89.2],backgroundColor:'#D85A30'}],{});
   }
@@ -1278,6 +1356,7 @@ function initCharts(name){
     mc('c-info','bar',D,[{label:'Anuncios TV',data:[50,34.1,49.8,19.7],backgroundColor:'#378ADD'},{label:'Promotores salud',data:[16.3,28.3,13.2,23.9],backgroundColor:'#1D9E75'},{label:'Radio',data:[12.4,13.6,16.3,12],backgroundColor:'#BA7517'},{label:'Nada',data:[4.7,18.2,1.9,28.6],backgroundColor:'#D85A30'},{label:'Redes sociales',data:[3.5,2.7,5.1,8.1],backgroundColor:'#888780'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:120}}});
   }
   if(name==='agua'){
+    initAgua2D();
     mc('c-agua','bar',D,[{label:'Mediana',data:[3,24,2,6],backgroundColor:C},{label:'Media',data:[4.5,23.7,4.1,8.6],backgroundColor:C.map(c=>c+'88')}],{});
     mc('c-agua2','bar',D,[{label:'Hierven',data:[55,18.2,58.4,20.8],backgroundColor:'#378ADD'},{label:'Agua tratada comprada',data:[0,44.6,0,0],backgroundColor:'#1D9E75'},{label:'Grifo/pilón',data:[29.8,20.5,33.1,46.7],backgroundColor:'#BA7517'},{label:'Sin tratamiento',data:[10.9,2.7,7,5],backgroundColor:'#D85A30'}],{...so,scales:{...so.scales,y:{...so.scales.y,max:110}}});
   }
@@ -1631,6 +1710,162 @@ function show(name, btn){
     if(name==='likert'){ initLikert(); }
     if(name==='buscador'){ filterIndicadores(); }
   }
+}
+// ══════════════════════════════════════════
+// CORRECCIONES AL DASHBOARD (basadas en Producto 4)
+// ══════════════════════════════════════════
+
+// ---- 1) Pruebas diagnósticas (F19, Tabla 99): vista completa vs renormalizada ----
+let pruebasChart = null;
+const PRUEBAS_DATA = [
+  { // Todos los hogares con disposición a la prueba (incluye "Nunca fue")
+    labels:['Sí encontró prueba','No encontró prueba','Nunca fue'],
+    ds:[[27.5,15.8,56.7],[13.7,9.6,76.7],[10.7,4.1,85.3],[60.4,26.3,13.3]],
+    sub:'Todos los hogares con disposición favorable a la prueba (F17); "Nunca fue" = no acudió a la posta por fiebre en el último año · Tabla 99'
+  },
+  { // Renormalizado: solo quienes acudieron a la posta (Sí+No)
+    labels:['Sí encontró prueba','No encontró prueba'],
+    ds:[[63.5,36.5],[58.8,41.2],[72.4,27.6],[69.7,30.3]],
+    sub:'Solo hogares que acudieron a la posta por fiebre (renormalizado) · Belén n=74, Yurimaguas n=51, Punchana n=29, SJB n=221'
+  }
+];
+function initPruebas(mode){
+  const m = PRUEBAS_DATA[mode||0];
+  const el = g('c-pruebas'); if(!el) return;
+  if(pruebasChart) pruebasChart.destroy();
+  pruebasChart = new Chart(el,{type:'bar',data:{labels:m.labels,datasets:[
+    {label:'Belén',data:m.ds[0],backgroundColor:'#378ADD'},
+    {label:'Yurimaguas',data:m.ds[1],backgroundColor:'#534AB7'},
+    {label:'Punchana',data:m.ds[2],backgroundColor:'#1D9E75'},
+    {label:'SJB',data:m.ds[3],backgroundColor:'#D85A30'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#888780',font:{size:10}}},y:{max:100,grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888780',font:{size:10}}}}}});
+  const cs = g('cs-pruebas'); if(cs) cs.textContent = m.sub;
+}
+function setPruebas(mode){
+  initPruebas(mode);
+  const b0=g('pt-btn-0'), b1=g('pt-btn-1');
+  if(b0&&b1){ b0.classList.toggle('on',mode===0); b1.classList.toggle('on',mode===1); }
+}
+
+// ---- 2) Índice de patrimonio (estatus socioeconómico compuesto) ----
+// Valores distritales verificados en el Producto 4 (Tablas 60-67, C2, C7-C9, 171, 179)
+const IP_COMP = [
+  {grp:'Bienes durables', nom:'Televisor',              v:[85.7,83.3,82.9,91.9]},
+  {grp:'Bienes durables', nom:'Smartphone',             v:[76.4,92.2,83.3,62.5]},
+  {grp:'Bienes durables', nom:'Celular',                v:[98.4,58.9,96.9,95.4]},
+  {grp:'Bienes durables', nom:'Radio',                  v:[75.2,44.6,82.1,73.0]},
+  {grp:'Bienes durables', nom:'Computadora',            v:[35.7,43.0,38.9,32.8]},
+  {grp:'Bienes durables', nom:'Refrigeradora',          v:[91.5,81.4,89.1,83.4]},
+  {grp:'Bienes durables', nom:'Vehículo (moto/bici/canoa)',v:[71.7,62.4,77.0,55.2]},
+  {grp:'Bienes durables', nom:'Carro o camión',         v:[2.7,1.6,8.9,1.9]},
+  {grp:'Calidad de vivienda', nom:'Paredes material noble', v:[70.5,87.2,71.6,68.3]},
+  {grp:'Calidad de vivienda', nom:'Piso cemento/cerámica',  v:[77.1,87.6,72.7,83.4]},
+  {grp:'Servicios básicos', nom:'Electricidad red pública', v:[98.8,99.6,97.3,97.3]},
+  {grp:'Servicios básicos', nom:'Agua entubada en vivienda',v:[91.4,48.3,89.8,86.1]},
+  {grp:'Servicios básicos', nom:'Desagüe conectado',        v:[84.5,86.4,77.8,78.8]},
+];
+let ipSel = IP_COMP.map(()=>true);
+function initPatrimonio(){
+  const ctr = g('ip-controls'); if(!ctr) return;
+  const grps = [...new Set(IP_COMP.map(c=>c.grp))];
+  ctr.innerHTML = grps.map(gr=>`<div style="background:var(--bg);border-radius:8px;padding:8px 10px;flex:1;min-width:200px">
+    <div style="font-size:10px;font-weight:600;color:var(--n3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px">${gr}</div>
+    ${IP_COMP.map((c,i)=>c.grp!==gr?'':`<label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--n2);margin-bottom:3px;cursor:pointer">
+      <input type="checkbox" ${ipSel[i]?'checked':''} onchange="toggleIP(${i})" style="accent-color:var(--b)"> ${c.nom}</label>`).join('')}
+  </div>`).join('');
+  renderPatrimonio();
+}
+function toggleIP(i){ ipSel[i]=!ipSel[i]; renderPatrimonio(); }
+function renderPatrimonio(){
+  const el = g('ip-result'); if(!el) return;
+  const sel = IP_COMP.filter((c,i)=>ipSel[i]);
+  if(!sel.length){ el.innerHTML='<p style="font-size:12px;color:var(--n3)">Selecciona al menos un componente.</p>'; return; }
+  const idx = [0,1,2,3].map(d=> sel.reduce((s,c)=>s+c.v[d],0)/sel.length );
+  const ctrl=(idx[0]+idx[1])/2, intv=(idx[2]+idx[3])/2;
+  const rows = DIST.map((d,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11px">
+    <span style="width:110px;color:${COL[i]};font-weight:500;flex-shrink:0;text-align:right">${d}</span>
+    <div style="flex:1;height:14px;background:var(--bg);border-radius:7px;overflow:hidden"><div style="height:100%;width:${idx[i]}%;background:${COL[i]};border-radius:7px;transition:width .3s"></div></div>
+    <span style="width:44px;font-weight:600;font-size:13px">${idx[i].toFixed(1)}</span>
+  </div>`).join('');
+  el.innerHTML = rows + `<div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--brd);font-size:11px;color:var(--n3);display:flex;gap:16px;flex-wrap:wrap">
+    <span>Componentes activos: <strong style="color:var(--n)">${sel.length} de ${IP_COMP.length}</strong></span>
+    <span>Grupo control: <strong style="color:var(--n)">${ctrl.toFixed(1)}</strong></span>
+    <span>Grupo intervención: <strong style="color:var(--n)">${intv.toFixed(1)}</strong></span>
+    <span>Brecha: <strong style="color:${(intv-ctrl)>=0?'#0F6E56':'#A32D2D'}">${(intv-ctrl)>=0?'+':''}${(intv-ctrl).toFixed(1)}</strong></span>
+  </div>`;
+}
+
+// ---- 3) Paradoja climática SJB: conocimiento del término vs percepción experiencial ----
+// D2 "Nada" (Tabla 102) y D6 olas de calor bastante/mucho (Producto 4)
+const CC_PARADOJA = {
+  nada:  [17.1,19.8,16.0,47.5],
+  calor: [64.8,58.2,73.6,89.2],
+};
+function initParadoja(){
+  const el = g('cc-paradoja'); if(!el) return;
+  el.innerHTML = DIST.map((d,i)=>`<div style="margin-bottom:10px">
+    <div style="font-size:11px;font-weight:500;color:${COL[i]};margin-bottom:3px">${d}</div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:10px;margin-bottom:2px">
+      <span style="width:230px;color:var(--n3);text-align:right;flex-shrink:0">No ha escuchado del CC ("Nada", D2)</span>
+      <div style="flex:1;height:9px;background:var(--bg);border-radius:4px;overflow:hidden"><div style="height:100%;width:${CC_PARADOJA.nada[i]}%;background:#888780;border-radius:4px"></div></div>
+      <span style="width:40px;font-weight:500">${CC_PARADOJA.nada[i]}%</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:10px">
+      <span style="width:230px;color:var(--n3);text-align:right;flex-shrink:0">Percibe más olas de calor (bastante/mucho)</span>
+      <div style="flex:1;height:9px;background:var(--bg);border-radius:4px;overflow:hidden"><div style="height:100%;width:${CC_PARADOJA.calor[i]}%;background:#D85A30;border-radius:4px"></div></div>
+      <span style="width:40px;font-weight:500">${CC_PARADOJA.calor[i]}%</span>
+    </div>
+  </div>`).join('');
+}
+
+// ---- 4) Agua: acceso vs continuidad (I1 Tabla 171 · I2 Tabla 173) ----
+const AGUA_2D = { acceso:[91.4,48.3,89.8,86.1], horas:[4.5,23.7,4.1,8.6] };
+function initAgua2D(){
+  const el = g('agua-2d'); if(!el) return;
+  el.innerHTML = DIST.map((d,i)=>{
+    const a=AGUA_2D.acceso[i], h=AGUA_2D.horas[i];
+    return `<div style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:500;color:${COL[i]};margin-bottom:3px">${d}</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:10px;margin-bottom:2px">
+        <span style="width:190px;color:var(--n3);text-align:right;flex-shrink:0">Acceso: hogares con agua entubada</span>
+        <div style="flex:1;height:9px;background:var(--bg);border-radius:4px;overflow:hidden"><div style="height:100%;width:${a}%;background:#378ADD;border-radius:4px"></div></div>
+        <span style="width:52px;font-weight:500">${a}%</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:10px">
+        <span style="width:190px;color:var(--n3);text-align:right;flex-shrink:0">Continuidad: horas/día (conectados)</span>
+        <div style="flex:1;height:9px;background:var(--bg);border-radius:4px;overflow:hidden"><div style="height:100%;width:${h/24*100}%;background:#1D9E75;border-radius:4px"></div></div>
+        <span style="width:52px;font-weight:500">${h} h/día</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- 5) Radar: desglose dinámico por dimensión ----
+const RADAR_DIMS = {
+  'Salud':      [19,20,23,24,25,26,27,28],
+  'Socioec.':   [1,2,3,4],
+  'Vivienda':   [7,9,10,12,13],
+  'Agua/San.':  [14,16,17,18],
+  'Comunidad':  [33,34,35,36],
+  'Clima':      [29,30,31,32],
+};
+let radarDetalleDone = false;
+function renderRadarDetalle(){
+  if(radarDetalleDone) return;
+  const el = g('radar-detalle'); if(!el) return;
+  radarDetalleDone = true;
+  el.innerHTML = Object.keys(RADAR_DIMS).map(dim=>{
+    const rows = RADAR_DIMS[dim].map(i=>{
+      const ind = IND43[i]; if(!ind) return '';
+      const cv=ctrlVal(ind), iv=intvVal(ind), b=iv-cv;
+      const fmt=v=>ind.tipo==='pct'?v.toFixed(1)+'%':v.toFixed(1);
+      return `<tr><td style="padding-left:1.2em">${ind.nom} <span style="font-size:9px;color:var(--n3)">(${ind.mejor==='bajo'?'menos es mejor, se invierte':'más es mejor'})</span></td>
+        <td>${fmt(cv)}</td><td>${fmt(iv)}</td>
+        <td style="color:${b>=0?'#0F6E56':'#A32D2D'};font-weight:500">${b>=0?'+':''}${fmt(b)}</td></tr>`;
+    }).join('');
+    return `<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--n);margin-bottom:4px">${dim} <span style="font-weight:400;color:var(--n3)">(${RADAR_DIMS[dim].length} indicadores)</span></div>
+      <table class="tbl"><thead><tr><th>Indicador</th><th>Control</th><th>Intervención</th><th>Brecha</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }).join('');
 }
 
 </script>
