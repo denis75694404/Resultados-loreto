@@ -1498,22 +1498,22 @@ function renderComparador(){
 // RADAR - VERSIÓN CORREGIDA
 // ══════════════════════════════════════════
 function initRadar(){
+  // Definición de dimensiones con índices CORRECTOS de IND43
   const dims = {
     'Salud':      [19,20,23,24,25,26,27,28],
-    'Socioec.':   [1,2,3,4],
+    'Socioeconómico':   [1,2,3,4],
     'Vivienda':   [7,9,10,12,13],
-    'Agua/San.':  [14,16,17,18],
+    'Agua/Saneamiento':  [14,16,17,18],
     'Comunidad':  [33,34,35,36],
     'Clima':      [29,30,31,32],
   };
   
-  function score(idxList, grpIdxs){
-    // Calcular el promedio de cada indicador primero (entre los distritos del grupo)
+  function calcularPuntuacionDimension(idxList, grpIdxs){
     let totalSum = 0;
     let validIndicators = 0;
     
-    idxList.forEach(i => {
-      const ind = IND43[i];
+    idxList.forEach(idx => {
+      const ind = IND43[idx];
       if(!ind) return;
       
       // Promedio de los distritos del grupo para este indicador
@@ -1530,20 +1530,19 @@ function initRadar(){
       
       let avgValue = grpSum / grpCount;
       
-      // Normalizar a escala 0-100
+      // Normalizar a escala 0-100 según el tipo de indicador
       let norm;
       if (ind.tipo === 'pct') {
         norm = avgValue; // ya está en porcentaje
       } else {
-        // Para variables numéricas: normalizar con tope 100
-        // Usamos un tope razonable según el indicador
+        // Para variables numéricas: normalización con tope según el indicador
         let maxVal = 0;
-        // Determinar el máximo esperado según el indicador
         if (ind.id === 'B10') maxVal = 600; // gasto semanal
         else if (ind.id === 'B12' || ind.id === 'B13') maxVal = 60; // minutos
-        else if (ind.id === 'A1') maxVal = 50; // años
+        else if (ind.id === 'A1') maxVal = 50; // años de residencia
+        else if (ind.id === 'B11') maxVal = 100; // gasto mensual
         else maxVal = 100;
-        norm = Math.min(avgValue / maxVal * 100, 100);
+        norm = Math.min((avgValue / maxVal) * 100, 100);
       }
       
       // Invertir si "menos es mejor"
@@ -1556,8 +1555,8 @@ function initRadar(){
   }
   
   const labels = Object.keys(dims);
-  const ctrl = labels.map(k => score(dims[k], [0, 1]));
-  const intv = labels.map(k => score(dims[k], [2, 3]));
+  const ctrl = labels.map(k => calcularPuntuacionDimension(dims[k], [0, 1]));
+  const intv = labels.map(k => calcularPuntuacionDimension(dims[k], [2, 3]));
   
   const el = document.getElementById('c-radar');
   if(!el) return;
@@ -1598,6 +1597,13 @@ function initRadar(){
       plugins: {
         legend: {
           display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ' + context.parsed.r + '/100';
+            }
+          }
         }
       },
       scales: {
@@ -1607,11 +1613,14 @@ function initRadar(){
           ticks: {
             color: '#888780',
             font: { size: 9 },
-            stepSize: 20
+            stepSize: 20,
+            callback: function(value) {
+              return value + '%';
+            }
           },
           pointLabels: {
             color: '#5f5e5a',
-            font: { size: 11 }
+            font: { size: 11, weight: '500' }
           },
           grid: {
             color: 'rgba(128,128,128,0.15)'
@@ -1623,6 +1632,104 @@ function initRadar(){
       }
     }
   });
+  
+  // Almacenar datos para el detalle
+  window._radarData = { dims, ctrl, intv, labels };
+}
+
+// ══════════════════════════════════════════
+// DETALLE DEL RADAR - VERSIÓN CORREGIDA
+// ══════════════════════════════════════════
+function renderRadarDetalle(){
+  if(!window._radarData) return;
+  
+  const { dims, ctrl, intv, labels } = window._radarData;
+  const el = document.getElementById('radar-detalle');
+  if(!el) return;
+  
+  let html = '';
+  
+  // Tabla resumen de puntuaciones por dimensión
+  html += `<div style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:8px;">
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px;">Puntuaciones compuestas por dimensión (0-100)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+      ${labels.map((label, i) => `
+        <div style="background:var(--card);padding:8px 12px;border-radius:6px;border:0.5px solid var(--brd);">
+          <div style="font-size:10px;color:var(--n3);">${label}</div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;">
+            <span style="color:#378ADD;font-weight:600;">Control: ${ctrl[i]}</span>
+            <span style="color:#D85A30;font-weight:600;">Intervención: ${intv[i]}</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+  
+  // Desglose por dimensión con todos los indicadores
+  html += `<div style="font-size:12px;font-weight:600;margin-top:12px;margin-bottom:8px;">Desglose por dimensión - valores originales</div>`;
+  
+  Object.keys(dims).forEach(dim => {
+    const indices = dims[dim];
+    const rows = indices.map(idx => {
+      const ind = IND43[idx];
+      if(!ind) return '';
+      
+      const cv = (ind.v[0] + ind.v[1]) / 2;
+      const iv = (ind.v[2] + ind.v[3]) / 2;
+      const b = iv - cv;
+      const fmt = v => ind.tipo === 'pct' ? v.toFixed(1) + '%' : v.toFixed(1);
+      
+      // Determinar si la brecha es favorable a intervención
+      const favorable = (ind.mejor === 'alto' && b > 0) || (ind.mejor === 'bajo' && b < 0);
+      
+      return `<tr>
+        <td style="padding-left:1.2em;font-size:11px;">
+          ${ind.nom}
+          <span style="font-size:9px;color:var(--n3);display:block;font-weight:400;">
+            ${ind.mejor === 'bajo' ? '(menor es mejor)' : '(mayor es mejor)'}
+          </span>
+        </td>
+        <td style="font-size:11px;text-align:center;">${fmt(cv)}</td>
+        <td style="font-size:11px;text-align:center;">${fmt(iv)}</td>
+        <td style="font-size:11px;text-align:center;font-weight:600;color:${favorable ? '#0F6E56' : (b !== 0 ? '#A32D2D' : 'var(--n3)')};">
+          ${b > 0 ? '+' : ''}${fmt(b)}
+          ${favorable ? ' ✓' : (b !== 0 ? ' ✗' : '')}
+        </td>
+      </tr>`;
+    }).join('');
+    
+    html += `<div style="margin-bottom:12px;border:0.5px solid var(--brd);border-radius:6px;overflow:hidden;">
+      <div style="background:var(--bg);padding:8px 12px;font-weight:600;font-size:12px;border-bottom:0.5px solid var(--brd);">
+        ${dim}
+        <span style="font-weight:400;color:var(--n3);font-size:11px;margin-left:8px;">
+          (${indices.length} indicadores • Control: ${ctrl[labels.indexOf(dim)]} • Intervención: ${intv[labels.indexOf(dim)]})
+        </span>
+      </div>
+      <table class="tbl" style="font-size:11px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:6px 12px;">Indicador</th>
+            <th style="text-align:center;padding:6px 12px;width:80px;">Control</th>
+            <th style="text-align:center;padding:6px 12px;width:80px;">Intervención</th>
+            <th style="text-align:center;padding:6px 12px;width:80px;">Brecha</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  });
+  
+  // Nota metodológica
+  html += `<div style="background:var(--tl);border-left:3px solid var(--t);border-radius:4px;padding:10px 12px;margin-top:12px;">
+    <p style="font-size:11px;color:var(--td);line-height:1.6;">
+      <strong>Metodología del radar:</strong> Cada dimensión es un promedio ponderado de los indicadores que la componen. 
+      Los valores se normalizan en escala 0-100. Para variables numéricas se usa un tope máximo (ej. gasto semanal: S/600). 
+      Los indicadores donde "menos es mejor" se invierten (100 - valor). 
+      Las puntuaciones del grupo son el promedio simple de sus distritos.
+    </p>
+  </div>`;
+  
+  el.innerHTML = html;
 }
 
 // ══════════════════════════════════════════
@@ -1789,22 +1896,28 @@ function filterIndicadores(){
 // ══════════════════════════════════════════
 const _origShow = show;
 function show(name, btn){
-  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
-  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
   const sec = document.getElementById('s-'+name);
   if(sec) sec.classList.add('on');
   btn.classList.add('on');
-  if(!window._init) window._init={};
+  
+  if(!window._init) window._init = {};
   if(!window._init[name]){
-    window._init[name]=true;
+    window._init[name] = true;
     initCharts(name);
-    if(name==='semaforo'){ renderSemaforo(); }
-    if(name==='comparador'){ renderComparador(); }
-    if(name==='radar'){ initRadar(); }
-    if(name==='funnel'){ renderFunnel(); }
-    if(name==='heatmap'){ initHeatmap(); }
-    if(name==='likert'){ initLikert(); }
-    if(name==='buscador'){ filterIndicadores(); }
+    
+    // Inicializaciones específicas para cada sección
+    if(name === 'semaforo') renderSemaforo();
+    if(name === 'comparador') renderComparador();
+    if(name === 'radar') {
+      initRadar();
+      // El detalle se renderiza cuando se abre el details
+    }
+    if(name === 'funnel') renderFunnel();
+    if(name === 'heatmap') initHeatmap();
+    if(name === 'likert') initLikert();
+    if(name === 'buscador') filterIndicadores();
   }
 }
 // ══════════════════════════════════════════
