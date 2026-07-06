@@ -1220,7 +1220,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
     <div class="leg"><span class="li"><span class="ld" style="background:#378ADD"></span>Grupo control (Belén + Yurimaguas)</span><span class="li"><span class="ld" style="background:#D85A30"></span>Grupo intervención (Punchana + SJB)</span></div>
     <div class="cw" style="height:380px"><canvas id="c-radar" role="img" aria-label="Radar multidimensional control vs intervención">Comparación de 6 dimensiones entre grupos.</canvas></div>
     <div class="ins-a ins" style="margin-top:12px"><p>Interpretación: valores más altos indican mejor posición relativa en esa dimensión. La dimensión Salud mide comportamientos preventivos; Clima mide conciencia del riesgo climático; Comunidad mide participación y organización comunitaria.</p></div>
-    <details style="margin-top:12px" ontoggle="if(this.open)renderRadarDetalle()">
+    <details style="margin-top:12px" id="radar-details" ontoggle="if(this.open && window._radarData)renderRadarDetalle()">
       <summary style="font-size:11px;font-weight:500;color:var(--b);cursor:pointer">¿Por qué el radar muestra grupos similares si ~30 de 43 indicadores tienen diferencias significativas? Ver metodología y desglose por dimensión</summary>
       <div style="font-size:11px;color:var(--n2);line-height:1.6;padding:10px 0">
         <p><strong>Metodología de las puntuaciones compuestas.</strong> Cada dimensión promedia un subconjunto de los 43 indicadores clave (desglose abajo). Para cada indicador: (1) los porcentajes se usan directamente en escala 0–100 y las variables numéricas se normalizan (valor/30×100, tope 100); (2) si "menos es mejor" (p. ej. hospitalización), el valor se invierte (100−valor); (3) la puntuación del grupo es el promedio simple de sus dos distritos y de todos los indicadores de la dimensión.</p>
@@ -2088,33 +2088,6 @@ function initAgua2D(){
   }).join('');
 }
 
-// ---- 5) Radar: desglose dinámico por dimensión ----
-const RADAR_DIMS = {
-  'Salud':      [19,20,23,24,25,26,27,28],
-  'Socioec.':   [1,2,3,4],
-  'Vivienda':   [7,9,10,12,13],
-  'Agua/San.':  [14,16,17,18],
-  'Comunidad':  [33,34,35,36],
-  'Clima':      [29,30,31,32],
-};
-let radarDetalleDone = false;
-function renderRadarDetalle(){
-  if(radarDetalleDone) return;
-  const el = g('radar-detalle'); if(!el) return;
-  radarDetalleDone = true;
-  el.innerHTML = Object.keys(RADAR_DIMS).map(dim=>{
-    const rows = RADAR_DIMS[dim].map(i=>{
-      const ind = IND43[i]; if(!ind) return '';
-      const cv=ctrlVal(ind), iv=intvVal(ind), b=iv-cv;
-      const fmt=v=>ind.tipo==='pct'?v.toFixed(1)+'%':v.toFixed(1);
-      return `<tr><td style="padding-left:1.2em">${ind.nom} <span style="font-size:9px;color:var(--n3)">(${ind.mejor==='bajo'?'menos es mejor, se invierte':'más es mejor'})</span></td>
-        <td>${fmt(cv)}</td><td>${fmt(iv)}</td>
-        <td style="color:${b>=0?'#0F6E56':'#A32D2D'};font-weight:500">${b>=0?'+':''}${fmt(b)}</td></tr>`;
-    }).join('');
-    return `<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--n);margin-bottom:4px">${dim} <span style="font-weight:400;color:var(--n3)">(${RADAR_DIMS[dim].length} indicadores)</span></div>
-      <table class="tbl"><thead><tr><th>Indicador</th><th>Control</th><th>Intervención</th><th>Brecha</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  }).join('');
-}
 
 // Inicializar con la vista renormalizada de pruebas
 document.addEventListener('DOMContentLoaded', function() {
